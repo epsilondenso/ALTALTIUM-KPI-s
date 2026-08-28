@@ -1,6 +1,27 @@
 import pandas as pd
 import numpy as np
 
+def count_inter_day(inter_df: pd.DataFrame) -> pd.Series:
+
+    inter_df["Fecha"] = pd.to_datetime(inter_df["Fecha"]).dt.strftime("%Y-%m-%d")
+    grouped = inter_df.groupby(by = "Fecha").count()["Nombre y apellido"]
+
+    return grouped
+
+def add_unique_interested(estad_port_df: pd.DataFrame,
+                         inter_df: pd.DataFrame, 
+                         inplace: bool = True) -> pd.DataFrame:
+
+    n_inter = count_inter_day(inter_df)
+
+    if inplace:
+        estad_port_df["Interesados"] = n_inter.values
+    else:
+        copy = estad_port_df.copy()
+        copy["Interesados"] = n_inter.values
+        return copy
+
+
 def embudo(raw_data: pd.DataFrame,            
            columns: list[str] = ["Exposición", "Visualizaciones", "Consultas recibidas"],
            pct_decimals: int = 3) -> pd.DataFrame:

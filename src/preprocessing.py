@@ -1,5 +1,6 @@
 from pathlib import Path
 import pandas as pd
+from src.utils import get_files
 
 def concat_tables(dir: str|Path, 
                        start: int = 2,
@@ -29,7 +30,7 @@ def concat_tables(dir: str|Path,
         Tabla concatenada, o None si `return_concat` es False.
     """
     
-    files = [table.name for table in dir.iterdir() if table.is_file()] 
+    files = get_files(dir)
     tables = [pd.read_excel(dir /file) for file in files[start-1:stop]]
     concat = pd.concat(tables)
 
