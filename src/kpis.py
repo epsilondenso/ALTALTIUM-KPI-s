@@ -21,11 +21,34 @@ def evci_pipeline(estad_portales: str|Path|pd.DataFrame,
                   inter_portales: str|Path|pd.DataFrame,
                   pct_decimals: int = 3,
                   start: int  = 2,
-                  stop: int = 4):
+                  stop: int = 4,
+                  include_consultas: bool = False,
+                  include_interesados: bool = True) -> pd.DataFrame:
     
     """
-    Integra todo el flujo para el embudo de
-    Exp -> Vis -> Cons -> Inter
+    Integra el flujo de marketing para un embudo de conversión.
+
+    Parameters
+    ----------
+    estad_portales : str | Path | pd.DataFrame
+        Estadísticas de rendimiento de los portales.
+    inter_portales : str | Path | pd.DataFrame
+        Registros de interesados provenientes de los portales.
+    pct_decimals : int, optional
+        Número de decimales para los porcentajes del embudo.
+    start : int, optional
+        Índice inicial de los archivos cuando se recibe un directorio.
+    stop : int, optional
+        Índice final de los archivos cuando se recibe un directorio.
+    include_consultas : bool, optional
+        Incluye la etapa de consultas recibidas. Por defecto es False.
+    include_interesados : bool, optional
+        Incluye la etapa de interesados. Por defecto es True.
+
+    Returns
+    -------
+    pd.DataFrame
+        Embudo de marketing con las etapas seleccionadas.
     """
 
     portales_stat = get_df(estad_portales, start=start, stop=stop).groupby(by = "Período").sum()
@@ -36,23 +59,51 @@ def evci_pipeline(estad_portales: str|Path|pd.DataFrame,
                       inplace= True)
 
 
+    columns = ["Exposición", "Visualizaciones"]
+    if include_consultas:
+        columns.append("Consultas recibidas")
+    if include_interesados:
+        columns.append("Interesados")
+
     embudo_evci = embudo(raw_data= portales_stat, 
-                     columns= ["Exposición", "Visualizaciones", "Consultas recibidas", "Interesados"],
+                     columns= columns,
                      pct_decimals= pct_decimals)
 
     return embudo_evci
 
 def irt_pipeline(crm_df: pd.DataFrame,
-                 interesados = Path|str|pd.DataFrame,
+                 interesados: Path | str | pd.DataFrame,
                  decimals: int = 3,
                  start: int = 2,
-                 stop: int = 4
-                 ):
+                 stop: int = 4,
+                 include_interesados: bool = True
+                 ) -> pd.DataFrame:
     """
-    Integra todo el flujo para 
-    Interesados  vs Registros vs Traspasos
+    Integra el flujo de interesados, registros y traspasos.
+
+    Parameters
+    ----------
+    crm_df : pd.DataFrame
+        Registros del CRM.
+    interesados : Path | str | pd.DataFrame
+        Registros de interesados provenientes de los portales.
+    decimals : int, optional
+        Número de decimales para los porcentajes del embudo.
+    start : int, optional
+        Índice inicial de los archivos cuando se recibe un directorio.
+    stop : int, optional
+        Índice final de los archivos cuando se recibe un directorio.
+    include_interesados : bool, optional
+        Incluye la etapa de interesados. Por defecto es True.
+
+    Returns
+    -------
+    pd.DataFrame
+        Embudo de CRM con las etapas seleccionadas.
     """
     columns = ["Interesados", "Registrados", "Traspasados"]
+    if not include_interesados:
+        columns.remove("Interesados")
 
     inter_df = get_df(interesados, start= start, stop = stop)
     crm_join_inter = join_inter_crm(crm_df= crm_df, inter_df= inter_df)
@@ -74,7 +125,9 @@ def full_funnel_pipeline(estad_portales: str | Path | pd.DataFrame,
                          crm_df: pd.DataFrame,
                          pct_decimals: int = 3,
                          start: int = 2,
-                         stop: int = 4) -> pd.DataFrame:
+                         stop: int = 4,
+                         include_consultas: bool = False,
+                         include_interesados: bool = True) -> pd.DataFrame:
     """
     Integra los embudos de marketing y CRM en un solo flujo de conversión.
 
@@ -92,14 +145,16 @@ def full_funnel_pipeline(estad_portales: str | Path | pd.DataFrame,
         Índice inicial de los archivos cuando se recibe un directorio.
     stop : int, optional
         Índice final de los archivos cuando se recibe un directorio.
+    include_consultas : bool, optional
+        Incluye la etapa de consultas recibidas. Por defecto es False.
+    include_interesados : bool, optional
+        Incluye la etapa de interesados. Por defecto es True.
 
     Returns
     -------
     pd.DataFrame
-        Embudo con las etapas Exposición, Visualizaciones, Consultas
-        recibidas, Interesados, Registrados y Traspasados. Los porcentajes
-        se calculan de forma continua respecto a la primera etapa y a la
-        etapa anterior.
+        Embudo con las etapas seleccionadas. Los porcentajes se calculan de
+        forma continua respecto a la primera etapa y a la etapa anterior.
     """
 
     marketing_funnel = evci_pipeline(
@@ -108,6 +163,8 @@ def full_funnel_pipeline(estad_portales: str | Path | pd.DataFrame,
         pct_decimals=pct_decimals,
         start=start,
         stop=stop,
+        include_consultas=include_consultas,
+        include_interesados=include_interesados,
     )
     crm_funnel = irt_pipeline(
         crm_df=crm_df,
@@ -115,11 +172,11 @@ def full_funnel_pipeline(estad_portales: str | Path | pd.DataFrame,
         decimals=pct_decimals,
         start=start,
         stop=stop,
+        include_interesados=include_interesados,
     )
 
-    counts = pd.concat(
-        [marketing_funnel["conteo"], crm_funnel["conteo"].iloc[1:]]
-    )
+    crm_counts = crm_funnel["conteo"].drop(index="Interesados", errors="ignore")
+    counts = pd.concat([marketing_funnel["conteo"], crm_counts])
     raw_data = pd.DataFrame([counts.to_list()], columns=counts.index.to_list())
 
     return embudo(
