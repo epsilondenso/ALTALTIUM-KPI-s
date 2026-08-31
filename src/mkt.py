@@ -1,5 +1,9 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
+
+from src.preprocessing import get_df
+
 
 def count_inter_day(inter_df: pd.DataFrame) -> pd.Series:
 
@@ -23,8 +27,9 @@ def count_inter_day(inter_df: pd.DataFrame) -> pd.Series:
     return grouped
 
 def join_inter_crm(crm_df: pd.DataFrame,
-                   inter_df: pd.DataFrame, 
-                   how: str = "inner") -> pd.DataFrame:
+                   inter_df: Path|str|pd.DataFrame, 
+                   how: str = "inner",
+                   **kwargs) -> pd.DataFrame:
 
 
     """
@@ -43,8 +48,8 @@ def join_inter_crm(crm_df: pd.DataFrame,
         DataFrame resultante de unir ambas tablas por correo electrónico
         e identificador del aviso.
     """
-
-
+    #Get df de interesados
+    inter_df = get_df(inter_df, **kwargs) 
     # CONCILIAR LAS TABLAS
     crm_df.rename(columns = {"Email":"E-mail", "ID de publicación": "Id aviso"}, inplace= True)
     crm_df = crm_df[crm_df["Portal origen"] == "Inmuebles24"].copy()
@@ -151,3 +156,11 @@ def tras_vs_reg(joined_df: pd.DataFrame) -> pd.DataFrame:
     tras_reg = np.round(traspasos.shape[0]/joined_df.shape[0], 3)
 
     return tras_reg
+
+
+def traspasos_por_pasante(**kwargs):
+    traspasos = join_inter_crm(**kwargs)
+    traspasos_pasante = traspasos[traspasos["¿Fue traspasado?"] == "Sí"].groupby(by = "Código asesor").count()
+    tras_pasante = traspasos_pasante.iloc[:, 0]
+    #tras_pasante.columns = ["Traspasos"]
+    return tras_pasante

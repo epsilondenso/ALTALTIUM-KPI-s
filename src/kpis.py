@@ -1,21 +1,8 @@
 from pathlib import Path
 import pandas as pd
 import numpy as np
-from src.preprocessing import concat_tables
+from src.preprocessing import concat_tables, get_df
 from src.mkt import (embudo, add_unique_interested, join_inter_crm, tras_vs_reg)
-
-
-def get_df(object: str|Path|pd.DataFrame, start: int = 2, stop: int = 4) -> pd.DataFrame:
-
-        if isinstance(object, Path):
-            return concat_tables(dir = object, start = start, stop = stop)
-        
-        elif isinstance(object, str):
-            return pd.read_excel(object)
-        
-        else:
-            return object
-
 
 def evci_pipeline(estad_portales: str|Path|pd.DataFrame, 
                   inter_portales: str|Path|pd.DataFrame,

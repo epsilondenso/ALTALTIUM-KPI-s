@@ -5,7 +5,7 @@ from src.utils import get_files
 def concat_tables(dir: str|Path, 
                        start: int = 2,
                        stop: int = 4,
-                       output: str|Path|None = "concat_path.csv",
+                       output: str|Path|None = None,
                        return_concat: bool = True) -> pd.DataFrame|None :
 
     """
@@ -37,3 +37,14 @@ def concat_tables(dir: str|Path,
     if output is not None:
         concat.to_csv(path_or_buf= output, index= False)
     return concat if return_concat else None 
+
+def get_df(object: str|Path|pd.DataFrame, start: int = 2, stop: int = 4) -> pd.DataFrame:
+
+        if isinstance(object, Path):
+            return concat_tables(dir = object, start = start, stop = stop)
+        
+        elif isinstance(object, str):
+            return pd.read_excel(object)
+        
+        else:
+            return object
