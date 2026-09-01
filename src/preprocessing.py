@@ -89,7 +89,12 @@ def load_citas_df(citas_path: str):
                     usecols = ["N"] + columnas_archivo_citas,
                     names = ["N"]+columnas_archivo_citas).dropna(subset = ["N"]+columnas_archivo_citas[:-1]).iloc[:, 1:]
     strip_df(citas)
-    citas["ASISTENCIA"] = [asis.lower().replace(" ", "") for asis in citas["ASISTENCIA"]]
+    citas["ASISTENCIA"] = (
+        citas["ASISTENCIA"]
+        .str.lower()
+        .str.replace(" ", "", regex=False)
+        .str.replace(r"o$", "a", regex=True)
+    )
 
     return citas
 
