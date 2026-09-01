@@ -146,11 +146,41 @@ def embudo(raw_data: pd.DataFrame,
 def reg_vs_inter(joined_df: pd.DataFrame,
                  tot_inter_df: pd.DataFrame,
                  decimals: int = 3) -> float:
+    """
+    Calcula la proporción de registros respecto a interesados.
+
+    Parameters
+    ----------
+    joined_df : pd.DataFrame
+        DataFrame de registros conciliados.
+    tot_inter_df : pd.DataFrame
+        DataFrame que contiene el conteo total de interesados.
+    decimals : int, optional
+        Número de decimales para el resultado.
+
+    Returns
+    -------
+    float
+        Proporción de registros sobre interesados.
+    """
 
     reg_inter = np.round(joined_df.shape[0]/tot_inter_df.loc["Interesados", "conteo"], decimals)
     return reg_inter
 
 def tras_vs_reg(joined_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calcula la proporción de traspasos respecto a registros.
+
+    Parameters
+    ----------
+    joined_df : pd.DataFrame
+        DataFrame de registros conciliados.
+
+    Returns
+    -------
+    float
+        Proporción de registros que fueron traspasados.
+    """
 
     traspasos = joined_df[joined_df["¿Fue traspasado?"] == "Sí"]
     tras_reg = np.round(traspasos.shape[0]/joined_df.shape[0], 3)
@@ -159,6 +189,19 @@ def tras_vs_reg(joined_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def traspasos_por_pasante(**kwargs):
+    """
+    Cuenta los traspasos agrupados por código de asesor.
+
+    Parameters
+    ----------
+    **kwargs
+        Argumentos enviados a `join_inter_crm`.
+
+    Returns
+    -------
+    pd.Series
+        Número de traspasos por asesor.
+    """
     traspasos = join_inter_crm(**kwargs)
     traspasos_pasante = traspasos[traspasos["¿Fue traspasado?"] == "Sí"].groupby(by = "Código asesor").count()
     tras_pasante = traspasos_pasante.iloc[:, 0]

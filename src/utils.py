@@ -21,6 +21,21 @@ def get_files(dir: str|Path):
     return files_list
 
 def strip_df(df: pd.DataFrame, inplace: bool = True):
+    """
+    Elimina espacios al inicio y final de columnas de texto.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame cuyos campos de texto se limpiarán.
+    inplace : bool, optional
+        Indica si se modifica el DataFrame original.
+
+    Returns
+    -------
+    pd.DataFrame | None
+        Copia limpia si `inplace` es False; de lo contrario, None.
+    """
     
     cols = df.select_dtypes(include=["object", "string"]).columns
 

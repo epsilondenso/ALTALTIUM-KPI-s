@@ -42,17 +42,47 @@ def concat_tables(dir: str|Path,
     return concat if return_concat else None 
 
 def get_df(object: str|Path|pd.DataFrame, start: int = 2, stop: int = 4) -> pd.DataFrame:
+    """
+    Obtiene un DataFrame desde un archivo, directorio o instancia existente.
 
-        if isinstance(object, Path):
-            return concat_tables(dir = object, start = start, stop = stop)
-        
-        elif isinstance(object, str):
-            return pd.read_excel(object)
-        
-        else:
-            return object
+    Parameters
+    ----------
+    object : str | Path | pd.DataFrame
+        Fuente de datos a cargar o retornar.
+    start : int, optional
+        Índice inicial al concatenar archivos de un directorio.
+    stop : int, optional
+        Índice final al concatenar archivos de un directorio.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame obtenido desde la fuente indicada.
+    """
+
+    if isinstance(object, Path):
+        return concat_tables(dir = object, start = start, stop = stop)
+
+    elif isinstance(object, str):
+        return pd.read_excel(object)
+
+    else:
+        return object
 
 def load_citas_df(citas_path: str):
+    """
+    Carga y limpia el archivo de citas.
+
+    Parameters
+    ----------
+    citas_path : str
+        Ruta del archivo CSV de citas.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame de citas con campos de texto normalizados.
+    """
     citas = pd.read_csv(citas_path, 
                     delimiter= ";", 
                     header = 1, 

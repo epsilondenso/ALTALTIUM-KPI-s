@@ -176,6 +176,19 @@ def full_funnel_pipeline(estad_portales: str | Path | pd.DataFrame,
 
 def desglose_citas_asesor(citas_df: pd.DataFrame): 
                           #asesores: list[str]):
+    """
+    Desglosa las citas de cada asesor según su asistencia.
+
+    Parameters
+    ----------
+    citas_df : pd.DataFrame
+        DataFrame de citas con las columnas de asesor y asistencia.
+
+    Returns
+    -------
+    tuple[pd.DataFrame, pd.DataFrame]
+        Conteos por asesor y asistencia, y resumen por estado de cita.
+    """
 
     test = citas_df.groupby(by = ["ASESOR", "ASISTENCIA"], 
                             as_index= False, 
