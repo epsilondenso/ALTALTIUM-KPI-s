@@ -172,3 +172,51 @@ def full_funnel_pipeline(estad_portales: str | Path | pd.DataFrame,
         pct_decimals=pct_decimals,
     )
 
+
+
+def desglose_citas_asesor(citas_df: pd.DataFrame, 
+                          asesores: list[str]):
+
+    test = citas_df.groupby(by = ["ASESOR", "ASISTENCIA"], 
+                            as_index= False, 
+                            observed = True).count().sort_values(by = "ASESOR", 
+                                                                 ascending = False, 
+                                                                 ignore_index = True).iloc[:, :3]
+
+    desglose = {"atendida": {asesor: 0 for asesor in asesores},
+                "reagendada" : {asesor: 0 for asesor in asesores},
+                "cancelada": {asesor: 0 for asesor in asesores},
+                "otros": {asesor: 0 for asesor in asesores}
+                }
+    estados = ["atendida", "reagendada", "cancelada"]
+
+    for asesor in asesores:
+        total_citas = test[test["ASESOR"] == asesor].loc[:, "ID"].sum()
+
+        for status_cita in estados:
+
+            resultado = test.loc[
+                (test["ASESOR"] == asesor)
+                & (test["ASISTENCIA"] == status_cita),
+                "ID"
+            ]
+
+            if not resultado.empty:
+                desglose[status_cita][asesor] = resultado.iloc[0]
+            else:
+                desglose[status_cita][asesor] = 0
+
+        total_conocidos = sum(
+        desglose[estado][asesor]
+        for estado in estados
+    )
+
+        desglose["otros"][asesor] = (
+        total_citas - total_conocidos
+    )
+
+    res_citas = pd.DataFrame(desglose)
+    res_citas["total"] = res_citas.sum(axis = 1)
+
+
+    return test, res_citas

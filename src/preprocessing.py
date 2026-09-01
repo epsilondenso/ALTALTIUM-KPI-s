@@ -1,6 +1,9 @@
 from pathlib import Path
 import pandas as pd
 from src.utils import get_files
+from config.config import columnas_archivo_citas 
+from src.utils import strip_df
+
 
 def concat_tables(dir: str|Path, 
                        start: int = 2,
@@ -48,3 +51,15 @@ def get_df(object: str|Path|pd.DataFrame, start: int = 2, stop: int = 4) -> pd.D
         
         else:
             return object
+
+def load_citas_df(citas_path: str):
+    citas = pd.read_csv(citas_path, 
+                    delimiter= ";", 
+                    header = 1, 
+                    usecols = ["N"] + columnas_archivo_citas,
+                    names = ["N"]+columnas_archivo_citas).dropna(subset = ["N"]+columnas_archivo_citas[:-1]).iloc[:, 1:]
+    strip_df(citas)
+    citas["ASISTENCIA"] = [asis.lower().replace(" ", "") for asis in citas["ASISTENCIA"]]
+
+    return citas
+
