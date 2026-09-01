@@ -174,21 +174,26 @@ def full_funnel_pipeline(estad_portales: str | Path | pd.DataFrame,
 
 
 
-def desglose_citas_asesor(citas_df: pd.DataFrame, 
-                          asesores: list[str]):
+def desglose_citas_asesor(citas_df: pd.DataFrame): 
+                          #asesores: list[str]):
 
     test = citas_df.groupby(by = ["ASESOR", "ASISTENCIA"], 
                             as_index= False, 
                             observed = True).count().sort_values(by = "ASESOR", 
                                                                  ascending = False, 
                                                                  ignore_index = True).iloc[:, :3]
+                                                                 
+    asesores = citas_df["ASESOR"].unique().tolist()
 
     desglose = {"atendida": {asesor: 0 for asesor in asesores},
                 "reagendada" : {asesor: 0 for asesor in asesores},
                 "cancelada": {asesor: 0 for asesor in asesores},
                 "otros": {asesor: 0 for asesor in asesores}
                 }
+    
     estados = ["atendida", "reagendada", "cancelada"]
+
+    
 
     for asesor in asesores:
         total_citas = test[test["ASESOR"] == asesor].loc[:, "ID"].sum()
