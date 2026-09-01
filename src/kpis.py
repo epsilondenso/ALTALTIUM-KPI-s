@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from src.preprocessing import concat_tables, get_df
 from src.mkt import (embudo, add_unique_interested, join_inter_crm, tras_vs_reg)
+from src.utils import strip_df
 
 def evci_pipeline(estad_portales: str|Path|pd.DataFrame, 
                   inter_portales: str|Path|pd.DataFrame,
@@ -106,7 +107,6 @@ def irt_pipeline(crm_df: pd.DataFrame,
 
     return embudo(raw, columns, decimals)
 
-
 def full_funnel_pipeline(estad_portales: str | Path | pd.DataFrame,
                          inter_portales: str | Path | pd.DataFrame,
                          crm_df: pd.DataFrame,
@@ -172,8 +172,6 @@ def full_funnel_pipeline(estad_portales: str | Path | pd.DataFrame,
         pct_decimals=pct_decimals,
     )
 
-
-
 def desglose_citas_asesor(citas_df: pd.DataFrame): 
                           #asesores: list[str]):
     """
@@ -237,4 +235,32 @@ def desglose_citas_asesor(citas_df: pd.DataFrame):
     res_citas["total"] = res_citas.sum(axis = 1)
 
 
-    return test, res_citas
+    return res_citas
+
+def leads_totales_asesor(crm_df: pd.DataFrame) -> pd.DataFrame:
+
+    """
+    Calcula el número total de leads asignados a cada asesor.
+
+    Parameters
+    ----------
+    crm_df : pd.DataFrame
+        DataFrame con los registros de leads y su asesor asignado.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame con el total de leads asignados a cada asesor,
+        ordenado de mayor a menor.
+    """
+
+    total_leads = crm_df[["ID Lead", 
+                      "a quien fue traspasado"]].groupby(by = "a quien fue traspasado", 
+                                                         as_index = False, 
+                                                         observed = False).count().sort_values(by="ID Lead", 
+                                                                                               ascending=False, 
+                                                                                               ignore_index = True)
+    strip_df(total_leads)
+    total_leads.columns = ["asesor", "total_leads"]
+
+    return total_leads
