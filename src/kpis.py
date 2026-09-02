@@ -4,6 +4,7 @@ import numpy as np
 from src.preprocessing import concat_tables, get_df
 from src.mkt import (embudo, add_unique_interested, join_inter_crm, tras_vs_reg)
 from src.utils import strip_df
+from config.paths import INTERESADOS
 
 def evci_pipeline(estad_portales: str|Path|pd.DataFrame, 
                   inter_portales: str|Path|pd.DataFrame,
@@ -64,7 +65,8 @@ def irt_pipeline(crm_df: pd.DataFrame,
                  decimals: int = 3,
                  start: int = 2,
                  stop: int = 4,
-                 include_interesados: bool = True
+                 include_interesados: bool = True,
+                 include_traspasos: bool = True
                  ) -> pd.DataFrame:
     """
     Integra el flujo de interesados, registros y traspasos.
@@ -92,6 +94,8 @@ def irt_pipeline(crm_df: pd.DataFrame,
     columns = ["Interesados", "Registrados", "Traspasados"]
     if not include_interesados:
         columns.remove("Interesados")
+    if not include_traspasos:
+        columns.remove("Traspasados")
 
     inter_df = get_df(interesados, start= start, stop = stop)
     crm_join_inter = join_inter_crm(crm_df= crm_df, inter_df= inter_df)
@@ -267,7 +271,75 @@ def leads_totales_asesor(crm_df: pd.DataFrame) -> pd.DataFrame:
     return total_leads
 
 def ventas_asesor(citas_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calcula las ventas acumuladas por asesor.
+
+    Parameters
+    ----------
+    citas_df : pd.DataFrame
+        DataFrame de citas con las columnas de asesor y ventas.
+
+    Returns
+    -------
+    pd.DataFrame
+        Ventas totales agrupadas por asesor.
+    """
     test_ventas = citas_df.groupby(by = "ASESOR",
                             as_index = False).sum()[["ASESOR", "VENTAS"]]
 
     return test_ventas
+
+
+def leads_tot_vs_regis(crm_df: pd.DataFrame,
+                       irt_pipeline_args: dict = {"interesados":  INTERESADOS,
+                                                  "start" : 1,
+                                                  "stop" : 4, 
+                                                  "include_traspasos" : False}) -> pd.DataFrame:
+    """
+    Obtiene el conteo y proporción de leads respecto a registros.
+
+    Parameters
+    ----------
+    crm_df : pd.DataFrame
+        DataFrame con los registros del CRM.
+    irt_pipeline_args : dict, optional
+        Argumentos adicionales enviados a `irt_pipeline`.
+
+    Returns
+    -------
+    pd.DataFrame
+        Conteo y porcentaje total del embudo de leads y registros.
+    """
+
+    leads_vs_reg = irt_pipeline(crm_df= crm_df, 
+             **irt_pipeline_args)[["conteo", "pct_tot"]]
+
+    return leads_vs_reg
+
+
+def citas_vs_regis(citas: pd.DataFrame, 
+                   decimals: int = 3) -> pd.DataFrame:
+    """
+    Calcula el porcentaje de citas registradas en CRM.
+
+    Parameters
+    ----------
+    citas : pd.DataFrame
+        DataFrame de citas con la columna de estado en CRM.
+    decimals : int, optional
+        Número de decimales para el porcentaje.
+
+    Returns
+    -------
+    pd.DataFrame
+        Conteos y porcentajes de citas totales y registradas.
+    """
+
+    total_citas = citas.shape[0]
+    citas_registradas = citas[citas["CRM"] == "Registrado"].shape[0]
+    tot_vs_reg ={"total": {"conteo": total_citas, "pct": 100}, "registradas": {"conteo": citas_registradas, "pct": 0}}
+    tot_vs_reg["registradas"]["pct"] = round((citas_registradas / total_citas) * 100, decimals)
+    tot_vs_reg["total"]["conteo"] = total_citas
+    tot_vs_reg["registradas"]["conteo"] = citas_registradas
+
+    return pd.DataFrame(tot_vs_reg).T
