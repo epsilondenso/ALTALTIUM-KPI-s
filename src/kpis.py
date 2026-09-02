@@ -193,6 +193,7 @@ def desglose_citas_asesor(citas_df: pd.DataFrame):
                             observed = True).count().sort_values(by = "ASESOR", 
                                                                  ascending = False, 
                                                                  ignore_index = True).iloc[:, :3]
+    
                                                                  
     asesores = citas_df["ASESOR"].unique().tolist()
 
@@ -264,3 +265,9 @@ def leads_totales_asesor(crm_df: pd.DataFrame) -> pd.DataFrame:
     total_leads.columns = ["asesor", "total_leads"]
 
     return total_leads
+
+def ventas_asesor(citas_df: pd.DataFrame) -> pd.DataFrame:
+    test_ventas = citas_df.groupby(by = "ASESOR",
+                            as_index = False).sum()[["ASESOR", "VENTAS"]]
+
+    return test_ventas

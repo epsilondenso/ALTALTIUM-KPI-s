@@ -95,6 +95,7 @@ def load_citas_df(citas_path: str):
         .str.replace(" ", "", regex=False)
         .str.replace(r"o$", "a", regex=True)
     )
+    citas["VENTAS"] = citas["VENTAS"].fillna(0, inplace = False).apply(lambda x: 1.0 if not isinstance(x, int) else x)
 
     return citas
 

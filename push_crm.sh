@@ -10,4 +10,4 @@ git add ./kpis_densel
 git commit -m "$COMMIT"
 git push crm densel
 rm -r ./kpis_densel
-git checkout main
+git checkout mainx
