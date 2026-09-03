@@ -343,3 +343,84 @@ def citas_vs_regis(citas: pd.DataFrame,
     tot_vs_reg["registradas"]["conteo"] = citas_registradas
 
     return pd.DataFrame(tot_vs_reg).T
+
+
+def full_sales_funnel_pipeline(estad_portales: str | Path | pd.DataFrame,
+                               inter_portales: str | Path | pd.DataFrame,
+                               crm_df: pd.DataFrame,
+                               citas_df: pd.DataFrame,
+                               pct_decimals: int = 3,
+                               start: int = 2,
+                               stop: int = 4,
+                               include_consultas: bool = False,
+                               include_interesados: bool = True,
+                               include_citas_registradas: bool = True) -> pd.DataFrame:
+    """
+    Integra las etapas de marketing, CRM, citas y ventas en un solo embudo.
+
+    Parameters
+    ----------
+    estad_portales : str | Path | pd.DataFrame
+        Estadísticas de rendimiento de los portales.
+    inter_portales : str | Path | pd.DataFrame
+        Registros de interesados provenientes de los portales.
+    crm_df : pd.DataFrame
+        Registros del CRM usados para identificar registros y traspasos.
+    citas_df : pd.DataFrame
+        DataFrame de citas previamente procesado con `load_citas_df`.
+    pct_decimals : int, optional
+        Número de decimales para los porcentajes del embudo.
+    start : int, optional
+        Índice inicial de los archivos cuando se recibe un directorio.
+    stop : int, optional
+        Índice final de los archivos cuando se recibe un directorio.
+    include_consultas : bool, optional
+        Incluye la etapa de consultas recibidas. Por defecto es False.
+    include_interesados : bool, optional
+        Incluye la etapa de interesados. Por defecto es True.
+    include_citas_registradas : bool, optional
+        Incluye la etapa de citas registradas en CRM. Por defecto es True.
+
+    Returns
+    -------
+    pd.DataFrame
+        Embudo continuo desde exposición hasta ventas, con las etapas
+        seleccionadas y sus porcentajes totales y relativos.
+    """
+
+    conversion_funnel = full_funnel_pipeline(
+        estad_portales=estad_portales,
+        inter_portales=inter_portales,
+        crm_df=crm_df,
+        pct_decimals=pct_decimals,
+        start=start,
+        stop=stop,
+        include_consultas=include_consultas,
+        include_interesados=include_interesados,
+    )
+    citas_funnel = citas_vs_regis(citas=citas_df, decimals=pct_decimals)
+    ventas = ventas_asesor(citas_df=citas_df)["VENTAS"].sum()
+
+    citas_counts = pd.Series(
+        {
+            "Citas": citas_funnel.loc["total", "conteo"],
+            "Citas registradas": citas_funnel.loc["registradas", "conteo"],
+        }
+    )
+    if not include_citas_registradas:
+        citas_counts = citas_counts.drop(index="Citas registradas")
+
+    counts = pd.concat(
+        [
+            conversion_funnel["conteo"],
+            citas_counts,
+            pd.Series({"Ventas": ventas}),
+        ]
+    )
+    raw_data = pd.DataFrame([counts.to_list()], columns=counts.index.to_list())
+
+    return embudo(
+        raw_data=raw_data,
+        columns=counts.index.to_list(),
+        pct_decimals=pct_decimals,
+    )
