@@ -424,3 +424,89 @@ def full_sales_funnel_pipeline(estad_portales: str | Path | pd.DataFrame,
         columns=counts.index.to_list(),
         pct_decimals=pct_decimals,
     )
+
+def flujo_de_leads(
+    crm_df: pd.DataFrame,
+    inicio_periodo: str,
+    fin_periodo: str,
+    pct_decimals: int = 3
+) -> pd.DataFrame:
+
+    time_stamped = crm_df.copy()
+
+    # Convertir fechas
+    time_stamped["Fecha última actividad"] = pd.to_datetime(
+        time_stamped["Fecha última actividad"],
+        format="mixed",
+        dayfirst=True
+    )
+
+    time_stamped["Fecha de registro"] = pd.to_datetime(
+        time_stamped["Fecha de registro"],
+        format="mixed",
+        dayfirst=True
+    )
+
+    inicio_periodo = pd.to_datetime(
+        inicio_periodo,
+        dayfirst=True
+    )
+
+    fin_periodo = pd.to_datetime(
+        fin_periodo,
+        dayfirst=True
+    )
+
+    # Totales
+    totales = time_stamped.shape[0]
+
+    # Nuevos
+    nuevos = time_stamped[
+        (time_stamped["Fecha de registro"] >= inicio_periodo) &
+        (time_stamped["Fecha de registro"] <= fin_periodo)
+    ].shape[0]
+
+    # Seguimiento
+    seguimiento = time_stamped[
+        time_stamped["¿Dio seguimiento?"] == "Sí"
+    ].shape[0]
+
+    # Estancados
+    estancados = time_stamped[
+        (time_stamped["¿Dio seguimiento?"] == "Sí") &
+        (
+            fin_periodo - time_stamped["Fecha última actividad"]
+            > pd.Timedelta(days=3)
+        )
+    ].shape[0]
+
+    # Fin sin venta
+    fin_sin_venta = time_stamped[
+        (time_stamped["Estatus final"] == "closed") &
+        (time_stamped["¿Hubo venta con pago?"] == "No")
+    ].shape[0]
+
+    # Crear DataFrame
+    resultado = pd.DataFrame(
+        {
+            "conteo": [
+                totales,
+                nuevos,
+                seguimiento,
+                estancados,
+                fin_sin_venta
+            ]
+        },
+        index=[
+            "totales",
+            "nuevos",
+            "seguimiento",
+            "estancados",
+            "fin_sin_venta"
+        ]
+    )
+
+    # Porcentaje respecto al total
+    resultado["pct"] = (resultado["conteo"] / totales).round(pct_decimals)
+
+    return resultado
