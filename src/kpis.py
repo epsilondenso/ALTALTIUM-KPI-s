@@ -431,6 +431,26 @@ def flujo_de_leads(
     fin_periodo: str,
     pct_decimals: int = 3
 ) -> pd.DataFrame:
+    """
+    Calcula métricas del flujo de leads en un periodo determinado.
+
+    Parameters
+    ----------
+    crm_df : pd.DataFrame
+        DataFrame con los registros y estados de los leads del CRM.
+    inicio_periodo : str
+        Fecha inicial del periodo de análisis.
+    fin_periodo : str
+        Fecha final del periodo de análisis.
+    pct_decimals : int, optional
+        Número de decimales para los porcentajes.
+
+    Returns
+    -------
+    pd.DataFrame
+        Conteos y porcentajes de leads totales, nuevos, en seguimiento,
+        estancados y cerrados sin venta.
+    """
 
     time_stamped = crm_df.copy()
 
