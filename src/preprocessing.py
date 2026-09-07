@@ -89,6 +89,7 @@ def load_citas_df(citas_path: str):
                     usecols = ["N"] + columnas_archivo_citas,
                     names = ["N"]+columnas_archivo_citas).dropna(subset = ["N"]+columnas_archivo_citas[:-1]).iloc[:, 1:]
     strip_df(citas)
+
     citas["ASISTENCIA"] = (
         citas["ASISTENCIA"]
         .str.lower()
@@ -99,3 +100,25 @@ def load_citas_df(citas_path: str):
 
     return citas
 
+###########################
+#-----REFACTORIZACIÓN-----#
+###########################
+
+def map_n_citas(n_citas_column: pd.Series) -> pd.Series:
+                
+    return n_citas_column.apply(lambda x: int(x[-1]))
+
+def map_ventas(ventas_column: pd.Series) -> pd.Series:
+
+    return ventas_column.fillna(0, inplace = False).apply(lambda x: 1 if not isinstance(x, int) else x)
+
+def norm_asistencia(asistencia_column: pd.Series) -> pd.Series:
+
+    return asistencia_column.str.lower().str.replace(" ", "", regex=False).str.replace(r"o$", "a", regex=True)
+
+
+transformations = {
+    "mapear n citas" : map_n_citas,
+    "mapear ventas" : map_ventas,
+    "normalizar asistencia" : norm_asistencia
+}
