@@ -116,9 +116,13 @@ def norm_asistencia(asistencia_column: pd.Series) -> pd.Series:
 
     return asistencia_column.str.lower().str.replace(" ", "", regex=False).str.replace(r"o$", "a", regex=True)
 
+def limpiar_precio(precio_column: pd.Series) -> pd.Series:
+
+    return precio_column.apply(lambda x: x)
 
 transformations = {
     "mapear n citas" : map_n_citas,
     "mapear ventas" : map_ventas,
-    "normalizar asistencia" : norm_asistencia
+    "normalizar asistencia" : norm_asistencia,
+    "limpiar precio": limpiar_precio
 }

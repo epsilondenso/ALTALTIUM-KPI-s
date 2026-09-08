@@ -8,8 +8,7 @@ from src.preprocessing import transformations
 def convert_boolean(
     series: pd.Series,
     true_values: list[str],
-    false_values: list[str]
-) -> pd.Series:
+    false_values: list[str]) -> pd.Series:
 
     true_values = {str(x).strip().lower() for x in true_values}
     false_values = {str(x).strip().lower() for x in false_values}
@@ -83,14 +82,14 @@ def load_table(
     extension = Path(path).suffix
 
     #Leer archivo
-    if extension == ".csv":
+    if extension == ".csv" and "read_csv" in config:
         df = pd.read_csv(path, encoding="utf-8", **config["read_csv"])
     
-    elif extension == ".xlsx":
-        df = pd.read_excel(path, engine = "openpyxl")
+    elif extension == ".xlsx" and "read_excel" in config:
+        df = pd.read_excel(path, **config["read_excel"])
 
     else:
-        raise ValueError("Valid extensions are .csv and .xlsx")
+        raise ValueError(f"Valid extensions are .csv and .xlsx and the corresponding YAML\nfile must have a read_csv or read_excel setting according to the extension.")
         return None
     
     #Preprocesamiento simple
@@ -147,7 +146,8 @@ def load_table(
             result[name] = pd.to_datetime(
             result[name],
             errors="coerce",
-            dayfirst=True
+            dayfirst=False,
+            format = "mixed"
         )
 
         elif dtype == "boolean":

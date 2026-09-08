@@ -1,0 +1,113 @@
+table: interesados
+
+read_excel:
+  engine: "openpyxl"
+
+strip: true
+lower: False
+
+columns:
+
+  - source: "Nombre y apellido"
+    name: nombre_apellido
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(200)
+
+  - source: "E-mail"
+    name: email
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(254)
+
+  - source: "Teléfono"
+    name: telefono
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(20)
+
+  - source: "Teléfono 2"
+    name: telefono_2
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(20)
+
+  - source: "Sucursal"
+    name: sucursal
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(150)
+
+  - source: "Mensaje"
+    name: mensaje
+    keep: true
+    pandas_dtype: string
+    sql_type: text
+
+  - source: "Fecha"
+    name: fecha
+    keep: true
+    pandas_dtype: datetime64[ns]
+    sql_type: timestamp
+
+  - source: "Id aviso"
+    name: id_aviso
+    keep: true
+    pandas_dtype: Int64
+    sql_type: bigint
+
+  - source: "Código"
+    name: codigo
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(20)
+
+  - source: "Provincia"
+    name: provincia
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(100)
+
+  - source: "Ciudad"
+    name: ciudad
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(100)
+
+  - source: "Barrio"
+    name: barrio
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(150)
+
+  - source: "Tipo de propiedad"
+    name: tipo_propiedad
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(100)
+
+  - source: "Tipo de operación"
+    name: tipo_operacion
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(50)
+
+  - source: "Precio"
+    name: precio
+    keep: true
+    pandas_dtype: string
+    sql_type: numeric(14,2)
+    transformations:
+      - limpiar precio
+
+  - source: "Título"
+    name: titulo
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(500)
+
+  - source: "Url aviso"
+    name: url_aviso
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(2048)
