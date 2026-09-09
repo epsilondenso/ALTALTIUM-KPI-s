@@ -113,7 +113,7 @@ columns:
     pandas_dtype: string
     sql_type: varchar(254)
 
-  - source: "Gerente del asesor"
+  - source: "Gerente del asesor"  
     name: gerente
     keep: true
     pandas_dtype: string
