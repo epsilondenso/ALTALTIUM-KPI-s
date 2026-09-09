@@ -25,13 +25,13 @@ columns:
     name: telefono
     keep: true
     pandas_dtype: string
-    sql_type: varchar(30)
+    sql_type: varchar(50)
 
   - source: "Teléfono 2"
     name: telefono_2
     keep: true
     pandas_dtype: string
-    sql_type: varchar(30)
+    sql_type: varchar(50)
 
   - source: "Sucursal"
     name: id_portal
