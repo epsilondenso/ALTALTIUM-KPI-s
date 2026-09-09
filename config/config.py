@@ -1,7 +1,7 @@
-codif_sucursales = {"p1":'ALTALTIUM REAL ESTATES VENTAS 1',
-                    "p2":'Altaltium Real Estates Premium',
-                    "p3":'Residencial',
-                    "p4":'Ventas 4'}
+codif_sucursales = {'ALTALTIUM REAL ESTATES VENTAS 1':1,
+                    'Altaltium Real Estates Premium':2,
+                    'Residencial':3,
+                    'Ventas 4':4}
 
 columnas_archivo_citas = ["ID",
                           "FECHA DE SOLICITUD",

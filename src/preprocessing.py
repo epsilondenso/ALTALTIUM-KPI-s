@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd
 from src.utils import get_files
 from config.config import columnas_archivo_citas 
+from config.config import codif_sucursales
 from src.utils import strip_df
 
 
@@ -126,10 +127,17 @@ def fillnull(series: pd.Series) -> pd.Series:
 
     return series.fillna(0)
 
+def codificar_portales(sucursal_col: pd.Series) -> pd.Series:
+
+    return sucursal_col.apply(lambda x: codif_sucursales[x]).astype("Int64")
+
+
+
 transformations = {
     "mapear n citas" : map_n_citas,
     "mapear ventas" : map_ventas,
     "normalizar asistencia" : norm_asistencia,
     "limpiar precio": limpiar_precio,
-    "rellenar nulos con 0": fillnull 
+    "rellenar nulos con 0": fillnull,
+    "codificar sucursal": codificar_portales
 }

@@ -2,6 +2,7 @@ table: interesados
 
 read_excel:
   engine: "openpyxl"
+  dtype: string
 
 strip: true
 lower: False
@@ -24,23 +25,25 @@ columns:
     name: telefono
     keep: true
     pandas_dtype: string
-    sql_type: varchar(20)
+    sql_type: varchar(30)
 
   - source: "Teléfono 2"
     name: telefono_2
     keep: true
     pandas_dtype: string
-    sql_type: varchar(20)
+    sql_type: varchar(30)
 
   - source: "Sucursal"
-    name: sucursal
+    name: id_portal
     keep: true
     pandas_dtype: string
-    sql_type: varchar(150)
+    sql_type: int
+    transformations:
+      - codificar sucursal
 
   - source: "Mensaje"
     name: mensaje
-    keep: true
+    keep: false
     pandas_dtype: string
     sql_type: text
 
@@ -103,12 +106,12 @@ columns:
 
   - source: "Título"
     name: titulo
-    keep: true
+    keep: false
     pandas_dtype: string
     sql_type: varchar(500)
 
   - source: "Url aviso"
     name: url_aviso
-    keep: true
+    keep: false
     pandas_dtype: string
     sql_type: varchar(2048)
