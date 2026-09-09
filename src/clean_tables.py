@@ -131,6 +131,10 @@ def load_table(
 
     # Convertir tipos, tratar nulos y aplicar transformaciones por columna
     for column in columns_to_keep:
+
+        name = column["name"]
+        dtype = column["pandas_dtype"]
+        
         #Tratar nulos
         if "dropna" in column and column["dropna"]:
             result.dropna(subset = column["name"], inplace = True)
@@ -139,8 +143,7 @@ def load_table(
             result[name] = result[name].fillna(column["fillna"])
 
         #Convertir tipos
-        name = column["name"]
-        dtype = column["pandas_dtype"]
+
 
         if dtype == "datetime64[ns]":
             result[name] = pd.to_datetime(
@@ -154,7 +157,13 @@ def load_table(
             result[name] = result[name].apply(lambda x: True if x in column["true_values"] else False)
 
         elif dtype.lower() in ["int64", "float64"]:
-            result[name] = pd.to_numeric(result[name], errors= "coerce").astype(dtype)
+            
+            result[name] = pd.to_numeric(result[name], errors= "coerce")#.astype(dtype)
+            if dtype == "Int64":
+                result[name] = result[name].astype(pd.Int64Dtype())
+            else:
+                result[name] = result[name].astype(dtype)
+
 
         else:
             result[name] = result[name].astype(dtype)

@@ -116,13 +116,20 @@ def norm_asistencia(asistencia_column: pd.Series) -> pd.Series:
 
     return asistencia_column.str.lower().str.replace(" ", "", regex=False).str.replace(r"o$", "a", regex=True)
 
-def limpiar_precio(precio_column: pd.Series) -> pd.Series:
+def limpiar_precio(series: pd.Series) -> pd.Series:
+    return pd.to_numeric(
+        series.str.replace(r"\D", "", regex=True),
+        errors="coerce"
+    ).astype("Int64")
 
-    return precio_column.apply(lambda x: x)
+def fillnull(series: pd.Series) -> pd.Series:
+
+    return series.fillna(0)
 
 transformations = {
     "mapear n citas" : map_n_citas,
     "mapear ventas" : map_ventas,
     "normalizar asistencia" : norm_asistencia,
-    "limpiar precio": limpiar_precio
+    "limpiar precio": limpiar_precio,
+    "rellenar nulos con 0": fillnull 
 }

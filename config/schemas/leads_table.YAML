@@ -1,8 +1,10 @@
-table: leads
+table: leads_crm
+primary_key: id_lead
 
 read_csv:
   delimiter: ","
   header: 0
+  dtype: string
 
 strip: true
 lower: False
@@ -37,7 +39,7 @@ columns:
     name: telefono
     keep: true
     pandas_dtype: string
-    sql_type: varchar(20)
+    sql_type: varchar(100)
 
   - source: "Portal origen"
     name: portal_origen
@@ -66,8 +68,8 @@ columns:
   - source: "Precio"
     name: precio
     keep: true
-    pandas_dtype: Float64
-    sql_type: numeric(14,2)
+    pandas_dtype: Int64
+    sql_type: bigint
 
   - source: "Estado"
     name: estado
@@ -276,8 +278,8 @@ columns:
   - source: "Monto de venta"
     name: monto_venta
     keep: true
-    fillna: 0
-    pandas_dtype: Float64
+    fillna: "0"
+    pandas_dtype: Int64
     sql_type: numeric(14,2)
 
   - source: "Fecha cierre"
@@ -299,13 +301,16 @@ columns:
     sql_type: integer
 
   - source: "Link del aviso"
-    name: link_aviso
+    name: url_aviso
     keep: false
     pandas_dtype: string
     sql_type: varchar(2048)
 
   - source: "ID de publicación"
-    name: id_publicacion
+    name: id_aviso
     keep: true
+    fillna: "0"
     pandas_dtype: Int64
     sql_type: bigint
+    transformations:
+      - rellenar nulos con 0

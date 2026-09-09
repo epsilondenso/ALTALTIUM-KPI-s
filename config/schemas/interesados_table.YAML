@@ -53,6 +53,7 @@ columns:
   - source: "Id aviso"
     name: id_aviso
     keep: true
+    fillna: "0"
     pandas_dtype: Int64
     sql_type: bigint
 
