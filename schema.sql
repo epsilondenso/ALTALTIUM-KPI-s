@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict YmGSlgg0VspILePbGJyHiDZPsrGE50kF3zUAvJ8mtFhLgc8Fs51rBDMxy01DJnN
+\restrict kv08JZsohuYXxrhpzYUtIyVm3tvYYIoonosfwWaa7MjG1krIoYk5FN6JTQbIhgL
 
 -- Dumped from database version 18.6
 -- Dumped by pg_dump version 18.6
@@ -303,5 +303,5 @@ ALTER TABLE ONLY public.stats_portales
 -- PostgreSQL database dump complete
 --
 
-\unrestrict YmGSlgg0VspILePbGJyHiDZPsrGE50kF3zUAvJ8mtFhLgc8Fs51rBDMxy01DJnN
+\unrestrict kv08JZsohuYXxrhpzYUtIyVm3tvYYIoonosfwWaa7MjG1krIoYk5FN6JTQbIhgL
 
