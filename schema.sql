@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict FKnAJkxz69odxzqTgXp0gHu6DGnvgWj8qTwtaYcdzdywbNVPi2sKfxDOIR4j12s
+\restrict YmGSlgg0VspILePbGJyHiDZPsrGE50kF3zUAvJ8mtFhLgc8Fs51rBDMxy01DJnN
 
 -- Dumped from database version 18.6
 -- Dumped by pg_dump version 18.6
@@ -67,6 +67,53 @@ ALTER SEQUENCE public.citas_id_cita_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE public.citas_id_cita_seq OWNED BY public.citas.id_cita;
+
+
+--
+-- Name: interesados; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.interesados (
+    nombre_apellido character varying(200),
+    email character varying(254),
+    telefono character varying(50),
+    telefono_2 character varying(50),
+    id_portal integer,
+    fecha timestamp without time zone,
+    id_aviso bigint,
+    codigo character varying(20),
+    provincia character varying(100),
+    ciudad character varying(100),
+    barrio character varying(150),
+    tipo_propiedad character varying(100),
+    tipo_operacion character varying(50),
+    precio numeric(14,2),
+    interesado_id integer NOT NULL
+);
+
+
+ALTER TABLE public.interesados OWNER TO postgres;
+
+--
+-- Name: interesados_interesado_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.interesados_interesado_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.interesados_interesado_id_seq OWNER TO postgres;
+
+--
+-- Name: interesados_interesado_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.interesados_interesado_id_seq OWNED BY public.interesados.interesado_id;
 
 
 --
@@ -149,10 +196,35 @@ CREATE TABLE public.semanas (
 ALTER TABLE public.semanas OWNER TO postgres;
 
 --
+-- Name: stats_portales; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.stats_portales (
+    periodo date NOT NULL,
+    exposicion integer,
+    visualizaciones integer,
+    consultas_recibidas integer,
+    completaron_formulario integer,
+    contactaron_por_whatsapp integer,
+    vieron_tus_datos integer,
+    id_portal integer NOT NULL
+);
+
+
+ALTER TABLE public.stats_portales OWNER TO postgres;
+
+--
 -- Name: citas id_cita; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.citas ALTER COLUMN id_cita SET DEFAULT nextval('public.citas_id_cita_seq'::regclass);
+
+
+--
+-- Name: interesados interesado_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.interesados ALTER COLUMN interesado_id SET DEFAULT nextval('public.interesados_interesado_id_seq'::regclass);
 
 
 --
@@ -161,6 +233,14 @@ ALTER TABLE ONLY public.citas ALTER COLUMN id_cita SET DEFAULT nextval('public.c
 
 ALTER TABLE ONLY public.citas
     ADD CONSTRAINT citas_pkey PRIMARY KEY (id_cita);
+
+
+--
+-- Name: interesados interesados_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.interesados
+    ADD CONSTRAINT interesados_pkey PRIMARY KEY (interesado_id);
 
 
 --
@@ -188,6 +268,14 @@ ALTER TABLE ONLY public.semanas
 
 
 --
+-- Name: stats_portales stats_portales_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.stats_portales
+    ADD CONSTRAINT stats_portales_pkey PRIMARY KEY (periodo, id_portal);
+
+
+--
 -- Name: citas citas_id_lead_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -196,8 +284,24 @@ ALTER TABLE ONLY public.citas
 
 
 --
+-- Name: interesados interesados_id_portal_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.interesados
+    ADD CONSTRAINT interesados_id_portal_fkey FOREIGN KEY (id_portal) REFERENCES public.portales(id_portal);
+
+
+--
+-- Name: stats_portales stats_portales_id_portal_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.stats_portales
+    ADD CONSTRAINT stats_portales_id_portal_fkey FOREIGN KEY (id_portal) REFERENCES public.portales(id_portal);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict FKnAJkxz69odxzqTgXp0gHu6DGnvgWj8qTwtaYcdzdywbNVPi2sKfxDOIR4j12s
+\unrestrict YmGSlgg0VspILePbGJyHiDZPsrGE50kF3zUAvJ8mtFhLgc8Fs51rBDMxy01DJnN
 

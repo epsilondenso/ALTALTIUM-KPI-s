@@ -149,8 +149,8 @@ def load_table(
             result[name] = pd.to_datetime(
             result[name],
             errors="coerce",
-            dayfirst=False,
-            format = "mixed"
+            dayfirst=True,
+            format = "%d/%m/%Y"
         )
 
         elif dtype == "boolean":
