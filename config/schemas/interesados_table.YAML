@@ -1,7 +1,7 @@
 table: interesados
 
-read_excel:
-  engine: "openpyxl"
+read_csv:
+  delimiter: ","
   dtype: string
 
 strip: true

@@ -16,7 +16,7 @@ columns:
     sql_type: integer
 
   - source: "ID"
-    name: id_cita
+    name: id_lead
     keep: true
     dropna: true
     pandas_dtype: Int64
