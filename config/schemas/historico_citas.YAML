@@ -25,7 +25,7 @@ columns:
   - source: "id_lead"
     name: id_lead
     keep: true
-    dropna: true
+    dropna: false
     pandas_dtype: Int64
     sql_type: bigint
 
