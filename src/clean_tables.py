@@ -153,7 +153,7 @@ def load_table(
             errors="coerce",
             dayfirst=day_first,
             format = date_format
-        ).dt.normalize()
+        )#.dt.normalize()
 
         elif dtype == "boolean":
             result[name] = result[name].apply(lambda x: True if x in column["true_values"] else False)
