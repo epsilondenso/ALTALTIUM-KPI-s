@@ -15,7 +15,9 @@ if __name__ == "__main__":
         # -- leads_crm -- # 
     leads_crm_path = get_files(CRM)[0]
     crm_df = load_table(path = CRM/leads_crm_path,
-                        yaml_path = SCHEMAS/"leads_table.YAML")
+                        yaml_path = SCHEMAS/"leads_table.YAML",
+                        date_format= "%d/%m/%Y %H:%M",
+                        day_first=True)
         # -- citas -- # 
     citas_path = get_files(CITAS)[0]
     citas_df = load_table(path = CITAS / citas_path,
@@ -29,7 +31,7 @@ if __name__ == "__main__":
                           yaml_path= SCHEMAS / "stats.YAML"
                           )
         # -- Interesados -- #
-    inter_tables = get_files(ESTAD_PORTALES)
+    inter_tables = get_files(INTERESADOS)
     concat_inter = concat_tables(dir = INTERESADOS, #CONCATENAR LAS TABLAS Y GUARDAR como CSV
                                  output = INTERESADOS / "interesados.csv",
                                  add_portal_column= False)
