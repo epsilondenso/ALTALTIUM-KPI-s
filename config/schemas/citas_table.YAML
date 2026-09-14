@@ -1,4 +1,9 @@
 table: citas
+primaty_key:
+  - cliente
+  - fecha_solicitud
+  - fecha_cita
+  - n_cita
 
 read_csv:
   delimiter: ";"
@@ -97,6 +102,6 @@ columns:
     name: ventas
     keep: true
     pandas_dtype: string
-    sql_type: varchar(100)
+    sql_type: int
     transformations: 
       - mapear ventas

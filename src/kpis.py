@@ -40,7 +40,7 @@ def evci_pipeline(estad_portales: str|Path|pd.DataFrame,
         Embudo de marketing con las etapas seleccionadas.
     """
 
-    portales_stat = get_df(estad_portales, start=start, stop=stop).groupby(by = "Período").sum()
+    portales_stat = get_df(estad_portales, start=start, stop=stop).groupby(by = "periodo").sum()
     portales_inter = get_df(inter_portales, start=start, stop=stop)
 
     add_unique_interested(estad_port_df= portales_stat,
@@ -48,11 +48,11 @@ def evci_pipeline(estad_portales: str|Path|pd.DataFrame,
                       inplace= True)
 
 
-    columns = ["Exposición", "Visualizaciones"]
+    columns = ["exposicion", "visualizaciones"]
     if include_consultas:
-        columns.append("Consultas recibidas")
+        columns.append("consultas_recibidas")
     if include_interesados:
-        columns.append("Interesados")
+        columns.append("interesados")
 
     embudo_evci = embudo(raw_data= portales_stat, 
                      columns= columns,

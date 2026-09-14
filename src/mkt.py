@@ -21,8 +21,8 @@ def count_inter_day(inter_df: pd.DataFrame) -> pd.Series:
         Número de interesados agrupados por día.
     """
 
-    inter_df["Fecha"] = pd.to_datetime(inter_df["Fecha"]).dt.strftime("%Y-%m-%d")
-    grouped = inter_df.groupby(by = "Fecha").count()["Nombre y apellido"]
+    #inter_df["Fecha"] = pd.to_datetime(inter_df["Fecha"]).dt.strftime("%Y-%m-%d")
+    grouped = inter_df.groupby(by = "fecha").count()["nombre_apellido"]
 
     return grouped
 
@@ -104,7 +104,7 @@ def add_unique_interested(estad_port_df: pd.DataFrame,
         return copy
 
 def embudo(raw_data: pd.DataFrame,  
-           columns: list[str] = ["Exposición", "Visualizaciones", "Consultas recibidas"],
+           columns: list[str] = ["exposición", "visualizaciones", "consultas_recibidas"],
            pct_decimals: int = 3) -> pd.DataFrame:
 
     """
