@@ -82,7 +82,7 @@ def cargar_datos():
     )
 
     inter_df = load_table(
-        path=INTERESADOS / "interesados.csv",
+        path=INTERESADOS / "historico_inter_portales.csv",
         yaml_path=SCHEMAS / "interesados_table.YAML",
         date_format= "mixed",
         day_first=True
