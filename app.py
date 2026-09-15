@@ -1,10 +1,13 @@
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
 import streamlit as st
 from datetime import timedelta
 
 from src.db.connect import get_connection
-from config.queries import full_funnel_query, current_week
+from config.queries import (full_funnel_query, flujo_leads_query, 
+                            total_citas_query, desglose_citas_query,
+                            leads_por_asesor_query, current_week)
 
 
 def load_table_from_sql(
@@ -67,7 +70,7 @@ with st.sidebar:
 
     fecha_fin = st.date_input(
         "Fecha final",
-        value=semana["fin_semana"].iloc[0]
+        value=semana["fin_semana"].iloc[0]+timedelta(days = 1)
     )
 
     if fecha_inicio > fecha_fin:
@@ -79,7 +82,7 @@ with st.sidebar:
 # ENCABEZADO
 # ============================================================
 
-st.title("Dashboard de KPI's")
+st.title("Panel principal")
 
 st.caption(
     f"Periodo: {fecha_inicio:%d/%m/%Y} — {fecha_fin:%d/%m/%Y}"
@@ -96,7 +99,38 @@ full_funnel = load_table_from_sql(
     params=(fecha_inicio, fecha_fin)
 )
 
+full_funnel["x_visual"] = full_funnel["conteo"]**0.25 
 
+# ============================================================
+# TABLA FLUJO DE LEADS
+# ============================================================
+
+flujo_leads = load_table_from_sql(flujo_leads_query,
+                                  conn,
+                                  params = (fecha_inicio, fecha_fin))
+
+# ============================================================
+# TABLA TOTAL CITAS
+# ============================================================
+
+total_citas = load_table_from_sql(total_citas_query,
+                                  conn,
+                                  params = (fecha_inicio, fecha_fin))
+
+# ============================================================
+# TABLA DESGLOSE CITAS
+# ============================================================
+
+desglose_citas = load_table_from_sql(desglose_citas_query,
+                                  conn,
+                                  params = (fecha_inicio, fecha_fin))
+
+# ============================================================
+# TABLA LEADS POR ASESOR
+# ============================================================
+leads_asesor = load_table_from_sql(leads_por_asesor_query,
+                                  conn,
+                                  params = (fecha_inicio, fecha_fin))
 # ============================================================
 # TARJETAS KPI
 # ============================================================
@@ -142,8 +176,10 @@ col6.metric(
 fig = go.Figure(
     go.Funnel(
         y=full_funnel["etapa"],
-        x=full_funnel["conteo"],
-        textinfo="value+percent previous",
+        x=full_funnel["x_visual"],
+        customdata=full_funnel["conteo"],
+        texttemplate="%{customdata:,}",
+        textinfo="none",
         textposition="auto",
         textfont=dict(
             size=12,
@@ -168,7 +204,7 @@ fig.update_layout(
         x = 0.5,
         xanchor = "center"
     ),
-    height=450,          # más compacto verticalmente
+    height=410,          # más compacto verticalmente
     width = 100,
     margin=dict(
         l=10,
@@ -177,18 +213,224 @@ fig.update_layout(
         b=10
     ),
     font=dict(
-        family="Arial",
+        family= "Arial",
         size=12           # tamaño general del gráfico
     ),
     paper_bgcolor="#3B3B3B",
     plot_bgcolor="#3B3B3B",
 )
 
-col1, col2 = st.columns([1.2, 1.2])
+#=============================================================
+#GRÁFICA FLUJO LEADS
+#=============================================================
+
+fig_flujo = go.Figure(
+    go.Bar(
+        x=flujo_leads["leads"],
+        y=flujo_leads["conteo"],
+        orientation="v",
+        text=flujo_leads["conteo"],
+        textposition="outside",
+        texttemplate="%{text:,}",
+        marker=dict(
+                    color="#00FFFF"
+                )
+    )
+)
+
+fig_flujo.update_layout(
+    title=dict(
+        text="Flujo de leads",
+        x=0.5,
+        xanchor="center",
+        font=dict(size=20)
+    ),
+    font=dict(
+        family="Arial",
+        size=12
+    ),
+    paper_bgcolor="#3B3B3B",
+    plot_bgcolor="#3B3B3B",
+    height=410,
+    margin=dict(l=15, r=40, t=50, b=15),
+    xaxis=dict(
+        title=None,
+        showgrid=False
+    ),
+    yaxis=dict(
+        title=None
+    )
+)
+
+#============================================================
+#GRÁFICA TOTAL CITAS
+#============================================================
+colores = {
+    "Atendidas": "#0080ff",
+    "Reagendadas": "#FFC107",
+    "Canceladas": "#F44336"
+}
+fig_citas = go.Figure(
+    go.Pie(
+        labels=total_citas["asistencia"],
+        values=total_citas["conteo"],
+        textinfo="label+percent",
+        textposition="inside",
+        hole=0.35,
+        marker = dict(colors = [colores[estado] for estado in total_citas["asistencia"]])
+    )
+)
+
+fig_citas.update_layout(
+    title=dict(
+        text="Total de citas",
+        x=0.5,
+        xanchor="center",
+        font=dict(size=20)
+    ),
+    font=dict(
+        family="Arial",
+        size=12
+    ),
+    paper_bgcolor="#3B3B3B",
+    plot_bgcolor="#3B3B3B",
+    height=410,
+    margin=dict(l=15, r=15, t=50, b=15),
+    showlegend=True,
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=-0.1,
+        xanchor="center",
+        x=0.5
+    )
+)
+
+#=============================================================
+#GRÁFICA LEADS POR ASESOR
+#=============================================================
+
+fig_la = go.Figure(
+    go.Bar(
+        x=leads_asesor["leads"],
+        y=leads_asesor["asesor"],
+        orientation="h",
+        text=leads_asesor["leads"],
+        textposition="outside",
+        texttemplate="%{text:,}",
+        marker=dict(
+                    color="#00FFFF"
+                )
+    )
+)
+
+fig_la.update_layout(
+    title=dict(
+        text="Leads por asesor",
+        x=0.5,
+        xanchor="center",
+        font=dict(size=20)
+    ),
+    font=dict(
+        family="Arial",
+        size=12
+    ),
+    paper_bgcolor="#3B3B3B",
+    plot_bgcolor="#3B3B3B",
+    height=410,
+    margin=dict(l=15, r=40, t=50, b=15),
+    xaxis=dict(
+        title=None,
+        showgrid=False
+    ),
+    yaxis=dict(
+        title=None
+    )
+)
+
+# =============================================================
+# GRÁFICA DESGLOSE DE CITAS POR ASESOR
+# =============================================================
+
+fig_desglose = go.Figure()
+
+fig_desglose.add_trace(
+    go.Bar(
+        x=desglose_citas["asesor"],
+        y=desglose_citas["atendidas"],
+        name="Atendidas",
+        marker=dict(color="#0080FF")
+    )
+)
+
+fig_desglose.add_trace(
+    go.Bar(
+        x=desglose_citas["asesor"],
+        y=desglose_citas["canceladas"],
+        name="Canceladas",
+        marker=dict(color="#F44336")
+    )
+)
+
+fig_desglose.add_trace(
+    go.Bar(
+        x=desglose_citas["asesor"],
+        y=desglose_citas["reagendadas"],
+        name="Reagendadas",
+        marker=dict(color="#FFC107")
+    )
+)
+
+fig_desglose.update_layout(
+    title=dict(
+        text="Desglose de citas por asesor",
+        x=0.5,
+        xanchor="center",
+        font=dict(size=20)
+    ),
+    font=dict(
+        family="Arial",
+        size=12
+    ),
+    paper_bgcolor="#3B3B3B",
+    plot_bgcolor="#3B3B3B",
+    height=410,
+    margin=dict(
+        l=15,
+        r=15,
+        t=50,
+        b=15
+    ),
+    barmode="stack",
+    xaxis=dict(
+        title=None,
+        showgrid=False,
+        tickangle=-45
+    ),
+    yaxis=dict(
+        title="Número de citas",
+        showgrid=True
+    ),
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=-0.55,
+        xanchor="center",
+        x=0.5
+    )
+)
+
+col1, col2, col3 = st.columns([0.95, 0.95, 0.95])
 
 with col1:
     st.plotly_chart(fig, use_container_width=True)
+with col2:
+    st.plotly_chart(fig_flujo, use_container_width=True)
+with col3:
+    st.plotly_chart(fig_citas, use_container_width=True)
 
+st.plotly_chart(fig_la, use_container_width=True)
+st.plotly_chart(fig_desglose, use_container_width=True)
 #=============================================================
 #                            CSS
 #=============================================================
@@ -197,7 +439,7 @@ st.markdown(
     """
     <style>
         [data-testid="stMetric"] {
-            background-color: #DFDFE1;
+            background-color: #52BEC0;
             border: 1px solid #d9d9d9;
             border-radius: 10px;
             overflow: hidden;
@@ -262,6 +504,54 @@ st.markdown(
         [data-testid="stMetricValue"],
         [data-testid="stMetricLabel"] {
             font-family: Arial, sans-serif;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# ============================================================
+# MARCOS GRÁFICAS
+# ============================================================
+
+st.markdown(
+    """
+    <style>
+    [data-testid="stPlotlyChart"] {
+        border: 1px solid #d9d9d9;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <style>
+        /* Fondo principal */
+        .stApp {
+            background-color: #000000;
+        }
+
+        /* Sidebar */
+        [data-testid="stSidebar"] {
+            background-color: #3B3B3B;
+        }
+
+        [data-testid="stSidebar"] > div:first-child {
+            background-color: #3B3B3B;
+        }
+
+        /* Barra superior */
+        [data-testid="stHeader"] {
+            background-color: #52BEC0;
+        }
+
+        /* Contenedor de la barra superior */
+        [data-testid="stHeader"] > div {
+            background-color: #52BEC0;
         }
     </style>
     """,
