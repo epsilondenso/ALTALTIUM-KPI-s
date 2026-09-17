@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict FKnAJkxz69odxzqTgXp0gHu6DGnvgWj8qTwtaYcdzdywbNVPi2sKfxDOIR4j12s
+\restrict pW3tJqzj7B9s85jiTeckQblVPwMa5cHtceIf6MH7pW6CZAjKJamYvBFxEuHMNrV
 
 -- Dumped from database version 18.6
 -- Dumped by pg_dump version 18.6
@@ -28,46 +28,47 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.citas (
-    id_cita integer NOT NULL,
     id_lead bigint,
-    fecha_solicitud timestamp without time zone,
-    fecha_cita timestamp without time zone,
-    cliente character varying(200),
+    fecha_solicitud timestamp without time zone NOT NULL,
+    fecha_cita timestamp without time zone NOT NULL,
+    cliente character varying(200) NOT NULL,
     asesor character varying(150),
     gerente character varying(150),
     asistencia character varying(30),
-    n_cita character varying(30),
+    n_cita character varying(30) NOT NULL,
     producto character varying(150),
     tipo_cita character varying(100),
     captacion character varying(100),
     registrado_crm boolean,
-    ventas character varying(100)
+    ventas integer
 );
 
 
 ALTER TABLE public.citas OWNER TO postgres;
 
 --
--- Name: citas_id_cita_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: interesados; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.citas_id_cita_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE TABLE public.interesados (
+    nombre_apellido character varying(200),
+    email character varying(254) NOT NULL,
+    telefono character varying(50),
+    telefono_2 character varying(50),
+    id_portal integer NOT NULL,
+    fecha timestamp without time zone NOT NULL,
+    id_aviso bigint NOT NULL,
+    codigo character varying(20),
+    provincia character varying(100),
+    ciudad character varying(100),
+    barrio character varying(150),
+    tipo_propiedad character varying(100),
+    tipo_operacion character varying(50),
+    precio numeric(14,2)
+);
 
 
-ALTER SEQUENCE public.citas_id_cita_seq OWNER TO postgres;
-
---
--- Name: citas_id_cita_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.citas_id_cita_seq OWNED BY public.citas.id_cita;
-
+ALTER TABLE public.interesados OWNER TO postgres;
 
 --
 -- Name: leads_crm; Type: TABLE; Schema: public; Owner: postgres
@@ -149,18 +150,37 @@ CREATE TABLE public.semanas (
 ALTER TABLE public.semanas OWNER TO postgres;
 
 --
--- Name: citas id_cita; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: stats_portales; Type: TABLE; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.citas ALTER COLUMN id_cita SET DEFAULT nextval('public.citas_id_cita_seq'::regclass);
+CREATE TABLE public.stats_portales (
+    periodo date NOT NULL,
+    exposicion integer,
+    visualizaciones integer,
+    consultas_recibidas integer,
+    completaron_formulario integer,
+    contactaron_por_whatsapp integer,
+    vieron_tus_datos integer,
+    id_portal integer NOT NULL
+);
 
+
+ALTER TABLE public.stats_portales OWNER TO postgres;
 
 --
 -- Name: citas citas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.citas
-    ADD CONSTRAINT citas_pkey PRIMARY KEY (id_cita);
+    ADD CONSTRAINT citas_pkey PRIMARY KEY (cliente, fecha_solicitud, fecha_cita, n_cita);
+
+
+--
+-- Name: interesados interesados_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.interesados
+    ADD CONSTRAINT interesados_pkey PRIMARY KEY (email, fecha, id_portal, id_aviso);
 
 
 --
@@ -188,6 +208,14 @@ ALTER TABLE ONLY public.semanas
 
 
 --
+-- Name: stats_portales stats_portales_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.stats_portales
+    ADD CONSTRAINT stats_portales_pkey PRIMARY KEY (periodo, id_portal);
+
+
+--
 -- Name: citas citas_id_lead_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -196,8 +224,24 @@ ALTER TABLE ONLY public.citas
 
 
 --
+-- Name: interesados interesados_id_portal_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.interesados
+    ADD CONSTRAINT interesados_id_portal_fkey FOREIGN KEY (id_portal) REFERENCES public.portales(id_portal);
+
+
+--
+-- Name: stats_portales stats_portales_id_portal_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.stats_portales
+    ADD CONSTRAINT stats_portales_id_portal_fkey FOREIGN KEY (id_portal) REFERENCES public.portales(id_portal);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict FKnAJkxz69odxzqTgXp0gHu6DGnvgWj8qTwtaYcdzdywbNVPi2sKfxDOIR4j12s
+\unrestrict pW3tJqzj7B9s85jiTeckQblVPwMa5cHtceIf6MH7pW6CZAjKJamYvBFxEuHMNrV
 

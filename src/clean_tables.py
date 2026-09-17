@@ -54,7 +54,9 @@ def apply_column_transformations(
 
 def load_table(
     path: str|Path, 
-    yaml_path: str
+    yaml_path: str,
+    date_format: str|None = "%d/%m/%Y",
+    day_first: bool = True
 ) -> pd.DataFrame | None:
     """
     Selecciona, renombra y convierte las columnas de un DataFrame
@@ -149,9 +151,9 @@ def load_table(
             result[name] = pd.to_datetime(
             result[name],
             errors="coerce",
-            dayfirst=False,
-            format = "mixed"
-        )
+            dayfirst=day_first,
+            format = date_format
+        )#.dt.normalize()
 
         elif dtype == "boolean":
             result[name] = result[name].apply(lambda x: True if x in column["true_values"] else False)

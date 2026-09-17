@@ -7,10 +7,9 @@ from src.utils import strip_df
 
 
 def concat_tables(dir: str|Path, 
-                       start: int = 2,
-                       stop: int = 4,
                        output: str|Path|None = None,
-                       return_concat: bool = True) -> pd.DataFrame|None :
+                       return_concat: bool = True,
+                       add_portal_column: bool =  True) -> pd.DataFrame|None :
 
     """
     Concatena tablas de Excel encontradas en un directorio.
@@ -33,11 +32,16 @@ def concat_tables(dir: str|Path,
     pd.DataFrame | None
         Tabla concatenada, o None si `return_concat` es False.
     """
-    
+    #CARGAR TABLAS QUE TERMINAN EN .xlsx
     files = get_files(dir)
-    tables = [pd.read_excel(dir /file) for file in files[start-1:stop]]
-    concat = pd.concat(tables)
+    tables = [pd.read_excel(dir /file, engine="openpyxl")  for file in files if file[-5:] == ".xlsx"]
 
+    #AÑADIR COLUMNA id_portal LOS ARCHIVOS DEBEN ESTAR EN ORDEN 
+    if add_portal_column:
+        for i in range(len(tables)):
+            tables[i]["id_portal"] = pd.Series(i+1, index=tables[i].index)
+    concat = pd.concat(tables)
+    #GUARDAR LA CONCATENACIÓN EN LA RUTA ESPECIFICADA
     if output is not None:
         concat.to_csv(path_or_buf= output, index= False)
     return concat if return_concat else None 

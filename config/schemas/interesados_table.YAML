@@ -1,7 +1,13 @@
 table: interesados
 
-read_excel:
-  engine: "openpyxl"
+primary_key:
+  - email
+  - fecha
+  - id_portal
+  - id_aviso
+
+read_csv:
+  delimiter: ","
   dtype: string
 
 strip: true
@@ -50,6 +56,7 @@ columns:
   - source: "Fecha"
     name: fecha
     keep: true
+    dropna: true
     pandas_dtype: datetime64[ns]
     sql_type: timestamp
 
