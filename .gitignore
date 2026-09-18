@@ -1,3 +1,6 @@
 __pycache__
 .pytest_cache
 kpis_altaltium.sql
+.csv
+.xlsx
+.streamlit/secrets.toml
