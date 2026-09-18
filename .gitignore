@@ -4,3 +4,4 @@ kpis_altaltium.sql
 .csv
 .xlsx
 .streamlit/secrets.toml
+.dump
