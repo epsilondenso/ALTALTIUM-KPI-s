@@ -67,13 +67,28 @@ WITH periodo_seleccionado AS (
 )
 
 SELECT 
-    'Nuevos' AS Leads, 
+    'Total' AS Leads, 
     COUNT(id_lead) AS Conteo 
 FROM 
     leads_crm,
     periodo_seleccionado
 WHERE 
     fecha_registro BETWEEN fecha_inicio AND fecha_fin
+
+UNION ALL 
+
+SELECT 
+    'Nuevos', 
+    COUNT(*)
+FROM 
+    leads_crm,
+    periodo_seleccionado
+WHERE 
+    fecha_registro BETWEEN fecha_inicio AND fecha_fin
+AND 
+    total_actividades = 0
+AND 
+    abierto is TRUE
 
 UNION ALL
 
@@ -87,6 +102,13 @@ WHERE
     fecha_registro BETWEEN fecha_inicio AND fecha_fin
 AND 
     dio_seguimiento IS TRUE
+AND 
+    total_actividades > 0
+AND 
+    abierto is TRUE
+AND
+    fecha_fin - fecha_ultima_actividad <= INTERVAL '3 days'
+
 
 UNION ALL
 
