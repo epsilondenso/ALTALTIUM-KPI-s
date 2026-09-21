@@ -1,9 +1,7 @@
 from pathlib import Path
 import pandas as pd
 from src.utils import get_files
-from config.config import columnas_archivo_citas 
 from config.config import codif_sucursales
-from src.utils import strip_df
 
 
 def concat_tables(dir: str|Path, 
