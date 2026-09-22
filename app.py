@@ -4,6 +4,7 @@ import pandas as pd
 
 from panels.principal import panel_principal, load_table_from_sql
 from panels.stats import stats_panel
+from panels.citas import panel_citas
 from config.queries.main_panel import current_week
 from src.db.connect import get_connection
 
@@ -41,6 +42,7 @@ fecha_fin = (
 panels = {
     "Principal": panel_principal,
     "Estad. por portal": stats_panel,
+    "Citas": panel_citas
 }
 # ============================================================
 # PANEL LATERAL
@@ -70,6 +72,7 @@ with st.sidebar:
         options=[
             "Principal",
             "Estad. por portal",
+            "Citas"
         ]
     )
 

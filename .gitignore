@@ -6,4 +6,4 @@ kpis_altaltium.sql
 .streamlit/secrets.toml
 .dump
 data/**/*.csv
-data/**/*.xlsx
+data/**/*.xlsx     
