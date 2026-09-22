@@ -9,6 +9,8 @@ prod_cap_query = """
                         fecha_cita 
                     BETWEEN
                         %s AND %s
+                    AND 
+                        captacion NOT IN ('s/d', '?', 'S/D', 'S/d')
                     GROUP BY 
                         producto, captacion
                     ORDER BY

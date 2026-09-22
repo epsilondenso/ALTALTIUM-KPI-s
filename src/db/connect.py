@@ -6,7 +6,7 @@ def get_connection(
     port: int = 5432,
     dbname: str = "kpis_altaltium",
     user: str = "postgres",
-    password: str = "aVs#1105"
+    password: str = "password"
 ):
     if "DB_URL" in st.secrets:
         return psycopg2.connect(st.secrets["DB_URL"])

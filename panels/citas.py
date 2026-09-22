@@ -29,8 +29,12 @@ def panel_citas(fecha_inicio: str, fecha_fin: str, conn):
     )
 
     fig.update_layout(
-        title="Captación por producto",
-        xaxis_title=None,
+        title=dict(
+        text="Captación por producto",
+        x=0.5,
+        xanchor="center"
+                        ),
+        xaxis_title="Captación",
         yaxis_title="Conteo",
         font=dict(family="Gotham, Arial"),
         plot_bgcolor="#3B3B3B",
