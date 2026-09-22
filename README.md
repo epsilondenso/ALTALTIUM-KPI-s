@@ -268,7 +268,7 @@ El periodo y el panel pueden seleccionarse desde la barra lateral.
 
 ---
 
-# Despliegue (Desplegaod)
+# Despliegue (Desplegado)
 ### Link: https://altaltium-kpi-s-lrzh7jtgxpssbv5mfkqm3o.streamlit.app
 
 El dashboard puede desplegarse utilizando **Streamlit Community Cloud**.
