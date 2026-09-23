@@ -14,6 +14,7 @@ prod_cap_query = """
                     GROUP BY 
                         producto, captacion
                     ORDER BY
-                        conteo
+                        conteo,
+                        captacion
                     DESC;
                 """
