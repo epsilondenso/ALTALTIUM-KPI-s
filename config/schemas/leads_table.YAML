@@ -1,0 +1,316 @@
+table: leads_crm
+primary_key: id_lead
+
+read_csv:
+  delimiter: ","
+  header: 0
+  dtype: string
+
+strip: true
+lower: False
+
+columns:
+
+  - source: "ID Lead"
+    name: id_lead
+    keep: true
+    pandas_dtype: Int64
+    sql_type: bigint
+
+  - source: "Nombre"
+    name: nombre
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(100)
+
+  - source: "Apellido"
+    name: apellido
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(100)
+
+  - source: "Email"
+    name: email
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(254)
+
+  - source: "Teléfono"
+    name: telefono
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(100)
+
+  - source: "Portal origen"
+    name: portal_origen
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(100)
+
+  - source: "titulo del aviso"
+    name: titulo_aviso
+    keep: false
+    pandas_dtype: string
+    sql_type: varchar(500)
+
+  - source: "Tipo"
+    name: tipo
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(50)
+
+  - source: "Operación"
+    name: operacion
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(50)
+
+  - source: "Precio"
+    name: precio
+    keep: true
+    pandas_dtype: Int64
+    sql_type: bigint
+
+  - source: "Estado"
+    name: estado
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(100)
+
+  - source: "Municipio"
+    name: municipio
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(100)
+
+  - source: "Colonia"
+    name: colonia
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(150)
+
+  - source: "Fecha de registro"
+    name: fecha_registro
+    keep: true
+    pandas_dtype: datetime64[ns]
+    sql_type: timestamp
+
+  - source: "Asesor de origen"
+    name: asesor_origen
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(150)
+
+  - source: "Código asesor"
+    name: codigo_asesor
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(50)
+
+  - source: "Email asesor"
+    name: email_asesor
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(254)
+
+  - source: "Gerente del asesor"  
+    name: gerente
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(150)
+
+  - source: "¿Fue traspasado?"
+    name: fue_traspasado
+    keep: true
+    pandas_dtype: boolean
+    true_values: ["Sí", "si", "SI", "SÍ"]
+    false_values: ["No", "no", "NO", ""]
+    sql_type: boolean
+
+  - source: "quien traspaso"
+    name: traspasador
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(150)
+
+  - source: "a quien fue traspasado"
+    name: traspasado_a
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(150)
+
+  - source: "Fecha último traspaso"
+    name: fecha_ultimo_traspaso
+    keep: true
+    pandas_dtype: datetime64[ns]
+    sql_type: timestamp
+
+  - source: "nota de traspaso"
+    name: nota_traspaso
+    keep: false
+    pandas_dtype: string
+    sql_type: text
+
+  - source: "¿Dio seguimiento?"
+    name: dio_seguimiento
+    keep: true
+    pandas_dtype: boolean
+    true_values: ["Sí", "si", "SI", "SÍ"]
+    false_values: ["No", "no", "NO", ""]
+    sql_type: boolean
+
+  - source: "Fecha primer seguimiento"
+    name: fecha_primer_seguimiento
+    keep: true
+    pandas_dtype: datetime64[ns]
+    sql_type: timestamp
+
+  - source: "Total actividades"
+    name: total_actividades
+    keep: true
+    pandas_dtype: Int64
+    sql_type: integer
+
+  - source: "# Llamadas"
+    name: llamadas
+    keep: true
+    pandas_dtype: Int64
+    sql_type: integer
+
+  - source: "# Citas registradas"
+    name: citas_registradas
+    keep: true
+    pandas_dtype: Int64
+    sql_type: integer
+
+  - source: "# Citas agendadas"
+    name: citas_agendadas
+    keep: true
+    pandas_dtype: Int64
+    sql_type: integer
+
+  - source: "# Citas atendidas"
+    name: citas_atendidas
+    keep: true
+    pandas_dtype: Int64
+    sql_type: integer
+
+  - source: "# Citas reagendadas"
+    name: citas_reagendadas
+    keep: true
+    pandas_dtype: Int64
+    sql_type: integer
+
+  - source: "# Citas canceladas"
+    name: citas_canceladas
+    keep: true
+    pandas_dtype: Int64
+    sql_type: integer
+
+  - source: "# Videollamadas"
+    name: videollamadas
+    keep: true
+    pandas_dtype: Int64
+    sql_type: integer
+
+  - source: "¿Fue perfilado?"
+    name: fue_perfilado
+    keep: true
+    pandas_dtype: boolean
+    true_values: ["Sí", "si", "SI", "SÍ"]
+    false_values: ["No", "no", "NO", ""]
+    sql_type: boolean
+
+  - source: "Fecha perfilamiento"
+    name: fecha_perfilamiento
+    keep: true
+    pandas_dtype: datetime64[ns]
+    sql_type: timestamp
+
+  - source: "Fecha última actividad"
+    name: fecha_ultima_actividad
+    keep: true
+    pandas_dtype: datetime64[ns]
+    sql_type: timestamp
+
+  - source: "Último asesor activo"
+    name: ultimo_asesor_activo
+    keep: true
+    pandas_dtype: string
+    sql_type: varchar(150)
+
+  - source: "Estatus final"
+    name: abierto
+    keep: true
+    pandas_dtype: boolean
+    sql_type: boolean
+    true_values: ["open", "Open"]
+    false_values: ["closed", "Closed"]
+
+  - source: "Estatus (español)"
+    name: estatus_espanol
+    keep: false
+    pandas_dtype: string
+    sql_type: varchar(100)
+
+  - source: "Razón de cierre"
+    name: razon_cierre
+    keep: false
+    pandas_dtype: string
+    sql_type: varchar(200)
+
+  - source: "¿Hubo venta con pago?"
+    name: hubo_venta_pago
+    keep: true
+    pandas_dtype: boolean
+    true_values: ["Sí", "si", "SI", "SÍ"]
+    false_values: ["No", "no", "NO", ""]
+    sql_type: boolean
+
+  - source: "¿Solo firmado?"
+    name: solo_firmado
+    keep: true
+    pandas_dtype: boolean
+    true_values: ["Sí", "si", "SI", "SÍ"]
+    false_values: ["No", "no", "NO", ""]
+    sql_type: boolean
+
+  - source: "Monto de venta"
+    name: monto_venta
+    keep: true
+    fillna: "0"
+    pandas_dtype: Int64
+    sql_type: numeric(14,2)
+
+  - source: "Fecha cierre"
+    name: fecha_cierre
+    keep: true
+    pandas_dtype: datetime64[ns]
+    sql_type: timestamp
+
+  - source: "Fecha cierre con venta"
+    name: fecha_cierre_venta
+    keep: true
+    pandas_dtype: datetime64[ns]
+    sql_type: timestamp
+
+  - source: "Días activo"
+    name: dias_activo
+    keep: true
+    pandas_dtype: Int64
+    sql_type: integer
+
+  - source: "Link del aviso"
+    name: url_aviso
+    keep: false
+    pandas_dtype: string
+    sql_type: varchar(2048)
+
+  - source: "ID de publicación"
+    name: id_aviso
+    keep: true
+    fillna: "0"
+    pandas_dtype: Int64
+    sql_type: bigint
+    transformations:
+      - rellenar nulos con 0
