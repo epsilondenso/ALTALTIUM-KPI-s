@@ -13,7 +13,7 @@ prod_cap_query = """
                         captacion NOT IN ('s/d', '?', 'S/D', 'S/d')
                     GROUP BY 
                         producto, captacion
-                    ORDER BY
+                    ORDR BY
                         conteo
                     DESC;
                 """
