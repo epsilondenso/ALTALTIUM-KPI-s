@@ -37,8 +37,8 @@ def panel_citas(fecha_inicio: str, fecha_fin: str, conn):
         xaxis_title="Captación",
         yaxis_title="Conteo",
         font=dict(family="Gotham, Arial"),
-        plot_bgcolor="#3B3B3B",
-        paper_bgcolor="#3B3B3B",
+        plot_bgcolor="#C90000",
+        paper_bgcolor="#C90000",
         font_color="white",
         legend_title_text="Prodcuto",
         margin=dict(l=20, r=20, t=50, b=20)
