@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
 import streamlit as st
 
@@ -57,14 +58,16 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
         conn,
         params=(fecha_inicio, fecha_fin)
     )
-
+    full_funnel["porcentaje_anterior"] = (
+    full_funnel["conteo"] / full_funnel["conteo"].shift(1)
+)   .fillna(1)
     # Transformación únicamente para la visualización.
     # Los conteos originales se conservan para etiquetas y KPI.
     full_funnel["x_visual"] = (
         full_funnel["conteo"] ** 0.25
     )
 
-
+    customdata=full_funnel[["conteo", "porcentaje_anterior"]].to_numpy()
     # ------------------------------------------------------------
     # FLUJO DE LEADS
     # ------------------------------------------------------------
@@ -173,10 +176,10 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
         go.Funnel(
             y=full_funnel["etapa"],
             x=full_funnel["x_visual"],
-            customdata=full_funnel["conteo"],
+            customdata=customdata,
 
-            texttemplate="%{customdata:,}",
-            textinfo="none",
+            texttemplate="%{customdata[0]:,}",
+            textinfo="text",
             textposition="auto",
 
             textfont=dict(
@@ -193,7 +196,13 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
                     color="lightgray",
                     width=1
                 )
-            )
+            ),
+            hovertemplate=(
+                "<b>%{y}</b><br>"
+                "Cont.: %{customdata[0]:,}<br>"
+                "Conv.: %{customdata[1]:.1%}"
+                "<extra></extra>"
+    )
         )
     )
 
