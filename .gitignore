@@ -7,3 +7,4 @@ kpis_altaltium.sql
 .dump
 data/**/*.csv
 data/**/*.xlsx     
+push_crm.sh
