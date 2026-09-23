@@ -9,6 +9,7 @@ from config.queries.main_panel import (
     total_citas_query,
     desglose_citas_query,
     leads_por_asesor_query,
+    tras_pasante_query
 )
 
 
@@ -107,6 +108,16 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
 
     leads_asesor = load_table_from_sql(
         leads_por_asesor_query,
+        conn,
+        params=(fecha_inicio, fecha_fin)
+    )
+
+    # ------------------------------------------------------------
+    # TRASPASOS POR PASANTE
+    # ------------------------------------------------------------
+
+    traspasos_pasante = load_table_from_sql(
+        tras_pasante_query,
         conn,
         params=(fecha_inicio, fecha_fin)
     )
@@ -530,6 +541,66 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
         )
     )
 
+    # ============================================================
+    # GRÁFICA TRASPASOS POR PASANTE
+    # ============================================================
+
+    fig_tras = go.Figure(
+        go.Bar(
+
+            y=traspasos_pasante["traspasador"],
+            x=traspasos_pasante["count"],
+
+            orientation="h",
+
+            text=traspasos_pasante["count"],
+            textposition="outside",
+            texttemplate="%{text:,}",
+
+            marker=dict(
+                color="#00FFFF"
+            )
+        )
+    )
+
+
+    fig_tras.update_layout(
+
+        title=dict(
+            text="Traspasos por pasante",
+            x=0.5,
+            xanchor="center",
+            font=dict(size=20)
+        ),
+
+        font=dict(
+            family="Arial",
+            size=12
+        ),
+
+        paper_bgcolor="#3B3B3B",
+        plot_bgcolor="#3B3B3B",
+
+        height=410,
+
+        margin=dict(
+            l=15,
+            r=40,
+            t=50,
+            b=15
+        ),
+
+        xaxis=dict(
+            title=None,
+            showgrid=False
+        ),
+
+        yaxis=dict(
+            title=None
+        )
+    )
+
+
 
     # ============================================================
     # DASHBOARD
@@ -590,6 +661,7 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
             use_container_width=True
         )
 
+    st.plotly_chart(fig_tras, use_container_width= True)
 
     # ============================================================
     # CSS — TARJETAS KPI

@@ -192,3 +192,29 @@ WHERE fecha_cita BETWEEN %s AND %s
 GROUP BY asesor
 ORDER BY Atendidas DESC;
 """
+
+tras_pasante_query = """
+                        SELECT 
+                        	traspasador, 
+                        	COUNT(*)
+                        FROM 
+                        	leads_crm
+                        INNER JOIN 
+                        	interesados
+                        ON 
+                        	leads_crm.email = interesados.email
+                        AND 
+                        	leads_crm.id_aviso = interesados.id_aviso
+                        WHERE 
+                        	leads_crm.fecha_registro
+                        BETWEEN
+                        	%s
+                        AND	
+                        	%s
+                        AND 
+                        	leads_crm.fue_traspasado IS TRUE
+                        AND 
+                            leads_crm.traspasador in ('Lesly Madariaga Rojas', 'Jose Alfredo Jimenez Teodoro')
+                        GROUP BY
+                        	leads_crm.traspasador;
+                        """
