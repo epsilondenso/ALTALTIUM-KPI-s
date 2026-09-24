@@ -25,7 +25,7 @@ def panel_citas(fecha_inicio: str, fecha_fin: str, conn):
 
     fig.update_traces(
         textposition="outside",
-        textfont=dict(size=12)
+        textfont=dict(size=13)
     )
 
     fig.update_layout(
