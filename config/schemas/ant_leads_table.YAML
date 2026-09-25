@@ -47,6 +47,12 @@ columns:
     pandas_dtype: string
     sql_type: varchar(100)
 
+  - source: "titulo del aviso"
+    name: titulo_aviso
+    keep: false
+    pandas_dtype: string
+    sql_type: varchar(500)
+
   - source: "Tipo"
     name: tipo
     keep: true
@@ -64,12 +70,6 @@ columns:
     keep: true
     pandas_dtype: Int64
     sql_type: bigint
-
-  - source: "Calle"
-    name: calle
-    keep: False
-    pandas_dtype: string
-    sql_type: varchar(100)
 
   - source: "Estado"
     name: estado
@@ -113,7 +113,7 @@ columns:
     pandas_dtype: string
     sql_type: varchar(254)
 
-  - source: "Gerencia"  
+  - source: "Gerente del asesor"  
     name: gerente
     keep: true
     pandas_dtype: string
@@ -233,7 +233,7 @@ columns:
     pandas_dtype: datetime64[ns]
     sql_type: timestamp
 
-  - source: "Poseedor actual"
+  - source: "Último asesor activo"
     name: ultimo_asesor_activo
     keep: true
     pandas_dtype: string
