@@ -95,12 +95,6 @@ columns:
     pandas_dtype: datetime64[ns]
     sql_type: timestamp
 
-  - source: "Asesor de origen"
-    name: asesor_origen
-    keep: true
-    pandas_dtype: string
-    sql_type: varchar(150)
-
   - source: "Código asesor"
     name: codigo_asesor
     keep: true
@@ -127,13 +121,13 @@ columns:
     false_values: ["No", "no", "NO", ""]
     sql_type: boolean
 
-  - source: "quien traspaso"
+  - source: "Asesor de origen"
     name: traspasador
     keep: true
     pandas_dtype: string
     sql_type: varchar(150)
 
-  - source: "a quien fue traspasado"
+  - source: "Primer asesor receptor"
     name: traspasado_a
     keep: true
     pandas_dtype: string
