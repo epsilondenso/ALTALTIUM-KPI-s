@@ -36,7 +36,8 @@ def cargar_datos():
     crm_df = load_table(
         path=CRM / leads_crm_path,
         yaml_path=SCHEMAS / "leads_table.YAML",
-        date_format= "%d/%m/%Y %H:%M",
+        # El CRM mezcla fechas sin hora y fechas con hora.
+        date_format="mixed",
         day_first=True
     )
 
