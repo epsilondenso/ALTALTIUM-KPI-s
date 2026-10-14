@@ -9,7 +9,9 @@ from config.queries.main_panel import (
     total_citas_query,
     desglose_citas_query,
     leads_por_asesor_query,
-    tras_pasante_query
+    tras_pasante_query,
+    tras_asesor_query,
+    tasa_registro_portal_query
 )
 
 
@@ -121,6 +123,17 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
         conn,
         params=(fecha_inicio, fecha_fin)
     )
+
+    # ------------------------------------------------------------
+    # TASAS DE REGISTRO POR PORTAL
+    # ------------------------------------------------------------
+
+    tasa_registro_portal = load_table_from_sql(
+        tasa_registro_portal_query,
+        conn,
+        params=(fecha_inicio, fecha_fin, fecha_inicio, fecha_fin)
+    )
+
 
 
     # ============================================================

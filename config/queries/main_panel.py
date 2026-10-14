@@ -218,3 +218,65 @@ tras_pasante_query = """
                         GROUP BY
                         	leads_crm.traspasador;
                         """
+tras_asesor_query = """
+                        SELECT 
+                        	traspasador, 
+                        	COUNT(*)
+                        FROM 
+                        	leads_crm
+                        INNER JOIN 
+                        	interesados
+                        ON 
+                        	leads_crm.email = interesados.email
+                        AND 
+                        	leads_crm.id_aviso = interesados.id_aviso
+                        WHERE 
+                        	leads_crm.fecha_registro
+                        BETWEEN
+                        	%s
+                        AND	
+                        	%s
+                        AND 
+                        	leads_crm.fue_traspasado IS TRUE
+                        AND 
+                            leads_crm.traspasador NOT IN ('Lesly Madariaga Rojas', 'Jose Alfredo Jimenez Teodoro')
+                        GROUP BY
+                        	leads_crm.traspasador;
+                        """
+
+tasa_registro_portal_query = """
+                             SELECT
+                                 i.id_portal,
+                                 i.interesados,
+                                 COALESCE(r.registrados, 0) AS registrados,
+                                 ROUND(
+                                     100.0 * COALESCE(r.registrados, 0)
+                                     / NULLIF(i.interesados, 0),
+                                     2
+                                 ) AS tasa_registro
+                             FROM (
+                                 SELECT
+                                     id_portal,
+                                     COUNT(email) AS interesados
+                                 FROM interesados
+                                 WHERE fecha >= %s
+                                   AND fecha < %s
+                                   AND id_portal IN (1, 2, 3, 4)
+                                 GROUP BY id_portal
+                             ) AS i
+                             LEFT JOIN (
+                                 SELECT
+                                     interesados.id_portal,
+                                     COUNT(DISTINCT(id_lead)) AS registrados
+                                 FROM leads_crm
+                                 INNER JOIN interesados
+                                     ON leads_crm.email = interesados.email
+                                    AND leads_crm.id_aviso = interesados.id_aviso
+                                 WHERE leads_crm.fecha_registro >= %s
+                                   AND leads_crm.fecha_registro < %s
+                                   AND interesados.id_portal IN (1, 2, 3, 4)
+                                 GROUP BY interesados.id_portal
+                             ) AS r
+                                 ON i.id_portal = r.id_portal
+                             ORDER BY i.id_portal;
+                             """
