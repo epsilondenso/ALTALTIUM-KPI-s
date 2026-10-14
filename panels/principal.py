@@ -3,6 +3,8 @@ import numpy as np
 import plotly.graph_objects as go
 import streamlit as st
 
+from config.config import portals_names
+
 from config.queries.main_panel import (
     full_funnel_query,
     flujo_leads_query,
@@ -133,8 +135,6 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
         conn,
         params=(fecha_inicio, fecha_fin, fecha_inicio, fecha_fin)
     )
-
-
 
     # ============================================================
     # TARJETAS KPI
@@ -614,6 +614,120 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
     )
 
 
+    # ============================================================
+    # GRÁFICA TASA DE REGISTRO POR PORTAL
+    # ============================================================
+    def color_registrados(tasa):
+        if tasa < 50:
+            return "#F44336"  # Rojo
+        elif 50 <= tasa < 85:
+            return "#FFC107"  # Amarillo
+        else:
+            return "#0080FF"  # Azul
+        
+    colores_registro = [color_registrados(tasa) for tasa in tasa_registro_portal["tasa_registro"]]
+
+    portales = [
+        portals_names[id_portal]
+        for id_portal in tasa_registro_portal["id_portal"]
+    ]
+
+
+    fig_tasa_portal = go.Figure()
+
+
+    fig_tasa_portal.add_trace(
+        go.Bar(
+
+            x=portales,
+            y=tasa_registro_portal["interesados"],
+
+            name="Interesados",
+
+            text=tasa_registro_portal["interesados"],
+            textposition="outside",
+            texttemplate="%{text:,}",
+
+            marker=dict(
+                color="#00FFFF"
+            )
+        )
+    )
+
+
+    fig_tasa_portal.add_trace(
+        go.Bar(
+
+            x=portales,
+            y=tasa_registro_portal["registrados"],
+
+            name="Registrados",
+
+            text=[
+                f"{tasa}%"
+                for tasa in tasa_registro_portal["tasa_registro"]
+            ],
+            textposition="outside",
+            marker_color = colores_registro
+
+            #marker=dict(
+                #color="#0080FF"
+            #)
+        )
+        
+    )
+
+
+    fig_tasa_portal.update_layout(
+
+        title=dict(
+            text="Tasa de registro por portal",
+            x=0.5,
+            xanchor="center",
+            font=dict(size=20)
+        ),
+
+        font=dict(
+            family="Arial",
+            size=12
+        ),
+
+        paper_bgcolor="#3B3B3B",
+        plot_bgcolor="#3B3B3B",
+
+        height=410,
+
+        margin=dict(
+            l=15,
+            r=15,
+            t=50,
+            b=80
+        ),
+
+        # Barras agrupadas
+        barmode="group",
+
+        xaxis=dict(
+            title=None,
+            showgrid=False
+        ),
+
+        yaxis=dict(
+            title=None
+        ),
+
+        legend=dict(
+            orientation="h",
+
+            yanchor="top",
+            y=-0.15,
+
+            xanchor="center",
+            x=0.5
+        )
+    )
+
+
 
     # ============================================================
     # DASHBOARD
@@ -625,6 +739,16 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
 
     st.plotly_chart(
         fig,
+        use_container_width=True
+    )
+
+
+    # ------------------------------------------------------------
+    # TASA DE REGISTRO POR PORTAL — ANCHO COMPLETO
+    # ------------------------------------------------------------
+
+    st.plotly_chart(
+        fig_tasa_portal,
         use_container_width=True
     )
 
