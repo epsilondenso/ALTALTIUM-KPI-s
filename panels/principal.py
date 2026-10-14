@@ -623,7 +623,7 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
         elif 50 <= tasa < 85:
             return "#FFC107"  # Amarillo
         else:
-            return "#0080FF"  # Azul
+            return "#0080ff"  # Azul 
         
     colores_registro = [color_registrados(tasa) for tasa in tasa_registro_portal["tasa_registro"]]
 
