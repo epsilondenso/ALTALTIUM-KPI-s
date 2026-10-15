@@ -13,7 +13,8 @@ from config.queries.main_panel import (
     leads_por_asesor_query,
     tras_pasante_query,
     tras_asesor_query,
-    tasa_registro_portal_query
+    tasa_registro_portal_query,
+    interesados_por_codigo_y_portal_query
 )
 
 
@@ -105,6 +106,17 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
         params=(fecha_inicio, fecha_fin)
     )
 
+    # ------------------------------------------------------------
+    # INTERESADOS POR CÓDIGO Y PORTAL
+    # ------------------------------------------------------------
+    tablas_icp = []
+    for i in range(1, 5, 1):
+        interesados_por_codigo_y_portal = load_table_from_sql(
+            interesados_por_codigo_y_portal_query,
+            conn,
+            params=(fecha_inicio, fecha_fin, i)
+        )
+        tablas_icp.append(interesados_por_codigo_y_portal)
 
     # ------------------------------------------------------------
     # LEADS POR ASESOR
@@ -389,6 +401,68 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
             x=0.5
         )
     )
+
+    # ============================================================
+    # GRÁFICA INTERESADOS POR PORTAL Y CÓDIGO
+    # ============================================================
+    figs_icp = []
+    for i in range(4):
+        fig_la = go.Figure(
+        go.Bar(
+
+            x=tablas_icp[i]["count"],
+            y=tablas_icp[i]["codigo"],
+
+            orientation="h",
+
+            text=tablas_icp[i]["count"],
+            textposition="outside",
+            texttemplate="%{text:,}",
+
+            marker=dict(
+                color="#00FFFF"
+            )
+        )
+    )
+        
+
+
+        fig_la.update_layout(
+
+            title=dict(
+                text=f"{portals_names[i+1]}",
+                x=0.5,
+                xanchor="center",
+                font=dict(size=20)
+            ),
+
+            font=dict(
+                family="Arial",
+                size=12
+            ),
+
+            paper_bgcolor="#3B3B3B",
+            plot_bgcolor="#3B3B3B",
+
+            height=410,
+
+            margin=dict(
+                l=15,
+                r=40,
+                t=50,
+                b=15
+            ),
+
+            xaxis=dict(
+                title=None,
+                showgrid=False
+            ),
+
+            yaxis=dict(
+                title=None
+            )
+        )
+        figs_icp.append(fig_la)
 
 
     # ============================================================
@@ -772,6 +846,48 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
 
         st.plotly_chart(
             fig_desglose,
+            use_container_width=True
+        )
+
+
+    # ------------------------------------------------------------
+    # INTERESADOS POR CÓDIGO Y PORTAL — 2 x 2
+    # ------------------------------------------------------------
+
+    col_icp_1, col_icp_2 = st.columns(2)
+
+
+    with col_icp_1:
+
+        st.plotly_chart(
+            figs_icp[0],
+            use_container_width=True
+        )
+
+
+    with col_icp_2:
+
+        st.plotly_chart(
+            figs_icp[1],
+            use_container_width=True
+        )
+
+
+    col_icp_3, col_icp_4 = st.columns(2)
+
+
+    with col_icp_3:
+
+        st.plotly_chart(
+            figs_icp[2],
+            use_container_width=True
+        )
+
+
+    with col_icp_4:
+
+        st.plotly_chart(
+            figs_icp[3],
             use_container_width=True
         )
 

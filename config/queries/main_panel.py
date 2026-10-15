@@ -280,3 +280,21 @@ tasa_registro_portal_query = """
                                  ON i.id_portal = r.id_portal
                              ORDER BY i.id_portal;
                              """
+
+interesados_por_codigo_y_portal_query = """
+                                        SELECT 
+                                        	codigo, 
+                                        	COUNT(*) 
+                                        FROM 
+                                        	interesados 
+                                        WHERE 
+                                        	fecha 
+                                        BETWEEN 
+                                        	%s AND %s 
+                                        AND 
+                                        	id_portal = %s 
+                                        GROUP BY 
+                                        	codigo 
+                                        ORDER BY 
+                                        	count ASC;
+                                        """
