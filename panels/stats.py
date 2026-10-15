@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
 import streamlit as st
-from config.config import portals_names
+from config.config import portals_names, portals_colors
 
 from config.queries.stats_panel import (exposicion_query, 
                                         vis_query, 
@@ -10,10 +10,7 @@ from config.queries.stats_panel import (exposicion_query,
 
 from panels.principal import load_table_from_sql
 
-colors = {1: "#adff00",
-          2: "#FF084A",
-          3: "#084AFF", 
-          4: "#08C6FF"}
+colors = portals_colors
 
 pie_colors = {"whatsapp": "#25d366",
               "formulario": "#3b5998",
