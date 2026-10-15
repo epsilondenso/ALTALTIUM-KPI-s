@@ -3,7 +3,7 @@ import numpy as np
 import plotly.graph_objects as go
 import streamlit as st
 
-from config.config import portals_names
+from config.config import portals_names, portals_colors
 
 from config.queries.main_panel import (
     full_funnel_query,
@@ -420,7 +420,7 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
             texttemplate="%{text:,}",
 
             marker=dict(
-                color="#00FFFF"
+                color = portals_colors[i+1]
             )
         )
     )

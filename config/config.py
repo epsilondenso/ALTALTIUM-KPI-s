@@ -8,7 +8,7 @@ portals_names = {1: "Ventas 1",
                  3: "Residencial",
                  4: "Ventas 4"}
 
-portals_colors = {1: "#adff00",
+portals_colors = {1: "#b4fa12",
                   2: "#FF084A",
                   3: "#084AFF", 
                   4: "#08C6FF"}
