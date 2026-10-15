@@ -811,6 +811,8 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
     # EMBUDO — ANCHO COMPLETO
     # ------------------------------------------------------------
 
+    st.subheader("Embudo de conversión")
+
     st.plotly_chart(
         fig,
         use_container_width=True
@@ -821,6 +823,8 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
     # TASA DE REGISTRO POR PORTAL — ANCHO COMPLETO
     # ------------------------------------------------------------
 
+    st.subheader("Registro en CRM por portal")
+
     st.plotly_chart(
         fig_tasa_portal,
         use_container_width=True
@@ -830,6 +834,8 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
     # ------------------------------------------------------------
     # CITAS — 1/3 + 2/3
     # ------------------------------------------------------------
+
+    st.subheader("Citas")
 
     col_citas_asesor, col_citas_pastel = st.columns([2, 1])
 
@@ -853,6 +859,8 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
     # ------------------------------------------------------------
     # INTERESADOS POR CÓDIGO Y PORTAL — 2 x 2
     # ------------------------------------------------------------
+
+    st.subheader("Interesados por código y portal")
 
     col_icp_1, col_icp_2 = st.columns(2)
 
@@ -896,6 +904,8 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
     # LEADS — 1/3 + 2/3
     # ------------------------------------------------------------
 
+    st.subheader("Leads")
+
     col_leads_flujo, col_leads_asesor = st.columns([1, 2])
 
 
@@ -913,6 +923,12 @@ def panel_principal(fecha_inicio: str, fecha_fin: str, conn):
             fig_la,
             use_container_width=True
         )
+
+    # ------------------------------------------------------------
+    # TRASPASOS POR PASANTE — ANCHO COMPLETO
+    # ------------------------------------------------------------
+
+    st.subheader("Traspasos")
 
     st.plotly_chart(fig_tras, use_container_width= True)
 
